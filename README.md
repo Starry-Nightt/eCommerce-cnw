@@ -1,34 +1,52 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Run code
 
-## Getting Started
-
-First, run the development server:
-
-```bash
 npm run dev
-# or
-yarn dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Công nghệ
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+1. Next JS 11 (Page Routing)
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+2. Axios (để gửi request api)
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+3. Antd (UI library)
 
-## Learn More
+4. Redux (Global state management)
 
-To learn more about Next.js, take a look at the following resources:
+5. Tailwind CSS
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+6. Typescript
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## folder Structure
 
-## Deploy on Vercel
+1. Thư mục page: Chứa các page (theo cơ chế page routing next js)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+2. Thư mục layouts: chứa các thành phần layout của app
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+3. Thư mục shared: chứa các mã dùng cho toàn app
+
+4. Thư mục components: chứa các components dùng cho toàn app
+
+5. Thư mục models: chứa các kiểu dữ liệu
+
+6. Thư mục utils: chứa các hàm sử dụng nhiều
+
+7. Thư mục services: chứa các service để gửi request đến API
+
+8. Thư mục constants: chứa các hằng số, enum
+
+9. Thư mục redux: quản lý global state
+
+## Code convention
+
+1. Tên thư mục: example-folder-name
+
+2. Tên class, component: MyComponentName, MyClassName
+
+3. Tên hằng số: MY_CONSTANT
+
+4. Tên biến: myVariable
+
+5. Viết code Component React theo Smart - Dumb Component
+
+
+
