@@ -9,6 +9,7 @@
       "@/layouts/*": ["shared/layouts/*"],
       "@/redux/*": ["shared/redux/*"],
       "@/components/*": ["components/*"],
+      "@/hooks/*": ["shared/hooks/*"],
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
