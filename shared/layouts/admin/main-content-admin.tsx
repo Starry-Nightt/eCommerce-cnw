@@ -1,12 +1,14 @@
-import React from 'react'
+import React from "react";
+import { Layout } from "antd";
+
+const { Content } = Layout;
 
 interface Props {
-    children: React.ReactNode;
-  }
-
-function MainContentAdmin({children}: Props) {
-    return <div className='h-full'>{children}</div>;
-
+  children: React.ReactNode;
 }
 
-export default MainContentAdmin
+function MainContentAdmin({ children }: Props) {
+  return <Content className="my-6 mx-4 p-6 bg-white">{children}</Content>;
+}
+
+export default MainContentAdmin;

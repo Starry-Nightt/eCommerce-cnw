@@ -8,9 +8,9 @@ function MyApp({ Component, pageProps }) {
   return (
     <App>
       <Providers>
-        <LayoutAdmin>
+        <LayoutDefault>
           <Component {...pageProps} />
-        </LayoutAdmin>
+        </LayoutDefault>
       </Providers>
     </App>
   );
