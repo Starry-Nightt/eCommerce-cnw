@@ -10,6 +10,7 @@
       "@/redux/*": ["shared/redux/*"],
       "@/components/*": ["components/*"],
       "@/hooks/*": ["shared/hooks/*"],
+      "@/interceptors/*": ["shared/interceptors/*"],
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
