@@ -1,3 +1,4 @@
+import EmptyData from "@/components/empty";
 import useFetch from "@/hooks/use-fetch";
 import useLogger from "@/hooks/use-logger";
 import React from "react";
@@ -11,7 +12,7 @@ function Test() {
 
   return (
     <>
-      {loading ? <h2>Loading</h2> : <h2>Done</h2>}
+      {loading ? <h2>Loading</h2> : (error ? <EmptyData/>: <h2>Done</h2>)}
       <button onClick={refetch}>Refetch</button>
     </>
   );

@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-} from "@ant-design/icons";
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Button, MenuProps } from "antd";
 import Link from "next/link";
 import AvatarHeader from "@/components/avatar-header";
@@ -41,7 +38,9 @@ function HeaderAdmin({ collapsed, setCollapsed }: Props) {
         onClick={() => setCollapsed(!collapsed)}
         className="w-16 h-16 text-base"
       />
-      <AvatarHeader items={items} />
+      <div className="pr-8">
+        <AvatarHeader items={items} />
+      </div>
     </Header>
   );
 }

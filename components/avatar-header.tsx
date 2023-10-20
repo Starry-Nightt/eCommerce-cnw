@@ -9,7 +9,7 @@ interface Props {
 
 function AvatarHeader({ items, textWhite }: Props) {
   return (
-    <div className={`flex gap-2 items-center pr-6 ${textWhite ? 'text-white': ''}`}>
+    <div className={`flex gap-2 items-center ${textWhite ? 'text-white': ''}`}>
       <Dropdown menu={{ items }} trigger={["click"]}>
         <Avatar
           size="default"

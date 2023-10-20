@@ -12,6 +12,7 @@ function useFetch(url: string, params?: Record<string, any>) {
     http
       .get(url, { signal: controller.signal, params })
       .then((data) => {
+        setError(null)
         setData(data);
       })
       .catch((error) => {

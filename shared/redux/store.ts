@@ -1,10 +1,12 @@
-import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "./counter";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import counterReducer from "./counter.slice";
+import spinnerReducer from "./spinner.slice";
 
 export const store = configureStore({
-  reducer: {
+  reducer: combineReducers({
     counter: counterReducer,
-  },
+    spinner: spinnerReducer,
+  }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

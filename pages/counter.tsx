@@ -1,4 +1,4 @@
-import { increment, decrement } from '@/redux/counter'
+import { increment, decrement } from '@/redux/counter.slice'
 import { RootState } from '@/redux/store'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
