@@ -22,6 +22,7 @@ export default function Home() {
       placement: "topLeft",
     });
   };
+
   return (
     <div className="flex justify-center items-center h-full">
       <Head>
