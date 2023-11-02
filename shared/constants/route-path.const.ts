@@ -1,1 +1,3 @@
-export enum ROUTE_PATH {}
+export enum ROUTE_PATH {
+  HOME = "/",
+}

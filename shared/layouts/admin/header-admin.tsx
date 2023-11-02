@@ -3,6 +3,8 @@ import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { Layout, Button, MenuProps } from "antd";
 import Link from "next/link";
 import AvatarHeader from "@/components/avatar-header";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 const { Header } = Layout;
 
@@ -13,7 +15,7 @@ const items: MenuProps["items"] = [
   },
   {
     key: "2",
-    label: <Link href="/counter">Đổi mật khẩu</Link>,
+    label: <Link href="/test">Đổi mật khẩu</Link>,
   },
   {
     key: "3",
@@ -27,6 +29,8 @@ interface Props {
 }
 
 function HeaderAdmin({ collapsed, setCollapsed }: Props) {
+  const { loggedIn, user } = useSelector((state: RootState) => state.user);
+
   return (
     <Header
       style={{ padding: 16, background: "#fff" }}
@@ -38,9 +42,11 @@ function HeaderAdmin({ collapsed, setCollapsed }: Props) {
         onClick={() => setCollapsed(!collapsed)}
         className="w-16 h-16 text-base"
       />
-      <div className="pr-8">
-        <AvatarHeader items={items} />
-      </div>
+      {loggedIn && (
+        <div className="pr-8">
+          <AvatarHeader user={user} items={items} />
+        </div>
+      )}
     </Header>
   );
 }
