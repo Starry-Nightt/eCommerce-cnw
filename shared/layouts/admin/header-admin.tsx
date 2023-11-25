@@ -11,7 +11,7 @@ const { Header } = Layout;
 const items: MenuProps["items"] = [
   {
     key: "1",
-    label: <Link href="/counter">Thông tin cá nhân</Link>,
+    label: <Link href="/profile/1">Thông tin cá nhân</Link>,
   },
   {
     key: "2",
