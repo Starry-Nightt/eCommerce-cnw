@@ -11,15 +11,6 @@ function MyApp({ Component, pageProps }) {
     createLoadingInterceptor(store);
   }, []);
 
-  if (Component.getLayout)
-    return (
-      <App>
-        <Providers>
-          {Component.getLayout(<Component {...pageProps} />)}
-        </Providers>
-      </App>
-    );
-
   return (
     <App>
       <Providers>
