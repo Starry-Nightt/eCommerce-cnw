@@ -12,7 +12,7 @@ function MainContent({ children }: Props) {
   const loading = useSelector((state: RootState) => state.spinner.loading);
 
   return (
-    <Layout.Content className="h-full bg-white my-6 mx-12 p-6">
+    <Layout.Content className="h-full bg-white mx-4 my-6 p-4 md:p-6 sm:mx-6 md:mx-8 lg:mx-12">
       <Spinner loading={loading}>{children}</Spinner>
     </Layout.Content>
   );
