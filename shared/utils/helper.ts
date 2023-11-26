@@ -30,3 +30,32 @@ export function getCurrentDateString(): string {
   }
   return `${yyyy}-${mm}-${dd}`;
 }
+
+export function vndCurrencyFormat(value: number) {
+  return new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(value);
+}
+
+export function dateFormatted(value: string) {
+  const date = new Date(value);
+  const yyyy = date.getFullYear();
+  const mm = date.getMonth() + 1;
+  const dd = date.getDate();
+  let sMM = `${mm}`;
+  let sDD = `${dd}`;
+  if (dd < 10) sDD = "0" + dd;
+  if (mm < 10) sMM = "0" + mm;
+
+  const formattedDate = sDD + "/" + sMM + "/" + yyyy;
+  return formattedDate;
+}
+
+export function truncateString(str: String, num: number) {
+  if (str.length > num) {
+    return str.slice(0, num) + "...";
+  } else {
+    return str;
+  }
+}
