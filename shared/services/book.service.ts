@@ -9,8 +9,20 @@ class AppBookService {
     return http.get("/books");
   };
 
-  getAllCategories = (): Promise<Category> => {
+  getAllCategories = (): Promise<Category[]> => {
     return http.get("/categories");
+  };
+
+  getBookByCategory = (categoryId: String): Promise<Book[]> => {
+    return http.get(`/books/category/${categoryId}`);
+  };
+
+  getBookByAuthor = (authorId: String): Promise<Book[]> => {
+    return http.get(`/books/author/${authorId}`);
+  };
+
+  getBookByPublisher = (publisherId: String): Promise<Book[]> => {
+    return http.get(`/books/publisher/${publisherId}`);
   };
 }
 

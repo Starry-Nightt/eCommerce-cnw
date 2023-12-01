@@ -3,7 +3,6 @@ import { Category } from "@/models/category.model";
 import { Publisher } from "@/models/publisher.model";
 import { Button, Card, Checkbox, Divider, Space } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
-import { it } from "node:test";
 import React, { Dispatch, SetStateAction } from "react";
 
 interface Props {
@@ -18,7 +17,7 @@ interface Props {
   setSelectedAuthors: Dispatch<SetStateAction<Author[]>>;
 }
 
-function CategoryList({
+function BookFilter({
   categories,
   authors,
   publishers,
@@ -126,4 +125,4 @@ function CategoryList({
   );
 }
 
-export default CategoryList;
+export default BookFilter;

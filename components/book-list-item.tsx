@@ -42,7 +42,7 @@ function BookListItem({ book }: Props) {
           src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
         />
       }
-      actions={[<LikeOutlined />, <EyeOutlined />, <ShoppingCartOutlined />]}
+      actions={[<ShoppingCartOutlined />]}
     >
       <Meta title={book.name} description={description} />
     </Card>

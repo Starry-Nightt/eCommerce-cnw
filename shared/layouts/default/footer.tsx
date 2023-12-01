@@ -2,8 +2,8 @@ import React from "react";
 
 function Footer() {
   return (
-    <div className="bg-slate-900 flex p-10">
-      <nav className="flex flex-col flex-1">
+    <div className="bg-slate-900 flex p-10 flex-wrap">
+      <nav className="flex flex-col flex-1 ">
         <header className="text-lg font-semibold uppercase tracking-wider mb-2 text-neutral-400">
           Services
         </header>
@@ -30,7 +30,9 @@ function Footer() {
         <a className="tracking-wide mb-1 text-neutral-50 hover:underline">
           Contact
         </a>
-        <a className="tracking-wide mb-1 text-neutral-50 hover:underline">Jobs</a>
+        <a className="tracking-wide mb-1 text-neutral-50 hover:underline">
+          Jobs
+        </a>
         <a className="tracking-wide mb-1 text-neutral-50 hover:underline">
           Press kit
         </a>
