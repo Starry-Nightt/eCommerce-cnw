@@ -1,8 +1,9 @@
 import React, { ReactNode } from "react";
-import { Layout } from "antd";
+import {  Layout } from "antd";
 import Spinner from "@/components/spinner";
 import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 interface Props {
   children: ReactNode;
@@ -10,6 +11,7 @@ interface Props {
 
 function MainContent({ children }: Props) {
   const loading = useSelector((state: RootState) => state.spinner.loading);
+  const router = useRouter()
 
   return (
     <Layout.Content className="h-full  mx-4 my-6 p-4 md:p-6 sm:mx-6 md:mx-8 lg:mx-12">

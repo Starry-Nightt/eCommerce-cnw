@@ -12,19 +12,24 @@ import {
   truncateString,
   vndCurrencyFormat,
 } from "@/utils/helper";
+import { useRouter } from "next/router";
 
 interface Props {
   book: Book;
 }
 
 function BookListItem({ book }: Props) {
-  const str =
-    "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptate dolor neque non asperiores dolorum consequuntur officiis laudantium quaerat tenetur fugit!";
+  const router = useRouter();
+
+  const onViewDetail = () => {
+    router.push(`/book/${book.id}`)
+  }
+
   const description = (
     <div>
-      <div className="mb-2">{truncateString(str,40)}</div>
+      <div className="mb-2">{truncateString(book.describe)}</div>
       <div className="flex justify-between mb-3 items-center">
-        <div className="text-primary font-medium">
+        <div className="text-cyan-600 font-medium">
           Giá: {vndCurrencyFormat(book.price)}
         </div>
         <div className=" text-neutral-800 text-xs">Đã bán: {book.sales}</div>
@@ -40,6 +45,8 @@ function BookListItem({ book }: Props) {
         <img
           alt="book-image"
           src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+          onClick={onViewDetail}
+          className="cursor-pointer"
         />
       }
       actions={[<ShoppingCartOutlined />]}

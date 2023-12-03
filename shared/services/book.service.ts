@@ -24,6 +24,10 @@ class AppBookService {
   getBookByPublisher = (publisherId: String): Promise<Book[]> => {
     return http.get(`/books/publisher/${publisherId}`);
   };
+
+  getBookById = (bookId: String): Promise<Book> => {
+    return http.get(`/books/${bookId}`);
+  };
 }
 
 const BookService = new AppBookService();

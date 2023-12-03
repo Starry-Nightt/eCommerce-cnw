@@ -11,7 +11,8 @@ interface Props {
 
 function NavListItem({ name, path, textWhite }: Props) {
   const router = useRouter();
-  const isActive = router.pathname.indexOf(path) > -1;
+  const isActive =
+    path === "/" ? router.asPath === "/" : router.pathname.indexOf(path) > -1;
   return (
     <>
       {isActive ? (

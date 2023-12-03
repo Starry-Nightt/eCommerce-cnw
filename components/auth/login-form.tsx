@@ -27,7 +27,7 @@ function LoginForm({ value, onToggleForm, onFinish, onFinishFailed }: Props) {
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinishForm} onFinishFailed={() => onFinishFailed('Submit failed !')}>
-      <Title level={3}>Sign In</Title>
+      <Title level={3}>Đăng nhập</Title>
       <Divider />
       <Form.Item
         label="Email"
@@ -37,7 +37,7 @@ function LoginForm({ value, onToggleForm, onFinish, onFinishFailed }: Props) {
         <Input size="large" placeholder="example@gmail.com" />
       </Form.Item>
       <Form.Item
-        label="Password"
+        label="Mật khẩu"
         name="password"
         rules={FormRules.password}
       >
@@ -45,11 +45,11 @@ function LoginForm({ value, onToggleForm, onFinish, onFinishFailed }: Props) {
       </Form.Item>
       <div className="flex justify-between items-end">
         <Button type="link" className="-ml-3" onClick={onToggleForm}>
-          Create an account ?
+          Tạo tài khoản ?
         </Button>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Sign in
+            Đăng nhập
           </Button>
         </Form.Item>
       </div>

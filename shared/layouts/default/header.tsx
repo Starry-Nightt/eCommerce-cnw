@@ -11,11 +11,13 @@ import Logo from "@/components/logo";
 import { ROUTE_PATH } from "@/constants/route-path.const";
 import NavList from "@/components/nav/nav-list";
 import { MenuOutlined } from "@ant-design/icons";
+import useAuthModal from "@/hooks/use-auth-modal";
+import { showLogin } from "@/redux/auth-modal.slice";
 
 function Header() {
   const { loggedIn, user } = useSelector((state: RootState) => state.user);
-  const [showingLogin, toggleLogin] = useToggle(false);
-  const [showingRegister, toggleRegister] = useToggle(false);
+  const {showingLogin, showingRegister, onShowLogin, onShowRegister, onHideLogin, onHideRegister} = useAuthModal()
+
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
 
@@ -45,6 +47,10 @@ function Header() {
 
   const navLinks = [
     {
+      name: "Trang chủ",
+      path: ROUTE_PATH.HOME,
+    },
+    {
       name: "Tất cả sách",
       path: ROUTE_PATH.BOOK,
     },
@@ -69,10 +75,10 @@ function Header() {
               <AvatarHeader user={user} items={items} textWhite />
             ) : (
               <Space direction="horizontal">
-                <Button type="primary" onClick={toggleLogin}>
+                <Button type="primary" onClick={onShowLogin}>
                   Sign in
                 </Button>
-                <Button onClick={toggleRegister}>Sign up</Button>
+                <Button onClick={onShowRegister}>Sign up</Button>
               </Space>
             )}
           </div>
@@ -86,12 +92,7 @@ function Header() {
           </div>
         </div>
       </Layout.Header>
-      <Modal open={showingRegister} onCancel={toggleRegister} footer={null}>
-        <AuthForm register={true} />
-      </Modal>
-      <Modal open={showingLogin} onCancel={toggleLogin} footer={null}>
-        <AuthForm register={false} afterSubmit={toggleLogin} />
-      </Modal>
+
       <Drawer
         placement="left"
         onClose={onCloseDrawer}
@@ -105,10 +106,10 @@ function Header() {
               <AvatarHeader user={user} items={items} textWhite />
             ) : (
               <Space direction="vertical" className="w-full">
-                <Button type="primary" onClick={toggleLogin} block>
+                <Button type="primary" onClick={onShowLogin} block>
                   Sign in
                 </Button>
-                <Button onClick={toggleRegister} block>
+                <Button onClick={onShowRegister} block>
                   Sign up
                 </Button>
               </Space>
