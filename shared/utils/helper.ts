@@ -52,7 +52,7 @@ export function dateFormatted(value: string) {
   return formattedDate;
 }
 
-export function truncateString(str: String, num: number) {
+export function truncateString(str: String, num: number = 40) {
   if (str.length > num) {
     return str.slice(0, num) + "...";
   } else {

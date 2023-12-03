@@ -36,19 +36,19 @@ function RegisterForm({ value, onToggleForm, onFinish, onFinishFailed }: Props) 
 
   return (
     <Form form={form} layout="vertical" onFinish={onFinishForm} onFinishFailed={() => onFinishFailed('Submit failed !')}>
-      <Title level={3}>Sign Up</Title>
+      <Title level={3}>Đăng ký</Title>
       <Divider />
-      <Form.Item label="Username" name="username" rules={FormRules.username}>
+      <Form.Item label="Tên đăng nhập" name="username" rules={FormRules.username}>
         <Input />
       </Form.Item>
       <Form.Item label="Email" name="email" rules={FormRules.email}>
         <Input />
       </Form.Item>
-      <Form.Item label="Password" name="password" rules={FormRules.password}>
+      <Form.Item label="Mật khẩu" name="password" rules={FormRules.password}>
         <Input.Password />
       </Form.Item>
       <Form.Item
-        label="Confirm password"
+        label="Xác nhận mật khẩu"
         name="confirmPassword"
         rules={[
           ...FormRules.password,
@@ -59,11 +59,11 @@ function RegisterForm({ value, onToggleForm, onFinish, onFinishFailed }: Props) 
       </Form.Item>
       <div className="flex justify-between items-end">
         <Button type="link" className="-ml-3" onClick={onToggleForm}>
-          Already have an account ? Sign in
+          Đã có tài khoản ? Đăng nhập
         </Button>
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            Sign up
+            Đăng ký
           </Button>
         </Form.Item>
       </div>

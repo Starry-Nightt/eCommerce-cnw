@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import { Layout} from "antd";
+import { Layout } from "antd";
 import HeaderAdmin from "./header-admin";
 import SideNavAdmin from "./sidenav-admin";
 import MainContentAdmin from "./main-content-admin";
@@ -16,21 +16,26 @@ interface Props {
 function LayoutAdmin({ children }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const { loggedIn, user } = useSelector((state: RootState) => state.user);
-  const router = useRouter()
+  const router = useRouter();
+  const [ok, setOk] = useState(false);
   useEffect(() => {
-    if (!loggedIn || user.role !== Role.ADMIN){
-      router.push(ROUTE_PATH.HOME)
-    }
-  }, [])
+    if (!loggedIn || user.role !== Role.ADMIN) {
+      router.push(ROUTE_PATH.PAGE_403);
+    } else setOk(true);
+  }, []);
 
   return (
     <div className="min-h-screen flex">
       <Layout className="flex-1">
-        <SideNavAdmin collapsed={collapsed} />
-        <Layout>
-          <HeaderAdmin collapsed={collapsed} setCollapsed={setCollapsed}  />
-          <MainContentAdmin>{children}</MainContentAdmin>
-        </Layout>
+        {ok && (
+          <>
+            <SideNavAdmin collapsed={collapsed} />
+            <Layout>
+              <HeaderAdmin collapsed={collapsed} setCollapsed={setCollapsed} />
+              <MainContentAdmin>{children}</MainContentAdmin>
+            </Layout>
+          </>
+        )}
       </Layout>
     </div>
   );

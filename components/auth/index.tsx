@@ -1,5 +1,5 @@
 import useToggle from "@/hooks/use-toggle";
-import React, { useEffect } from "react";
+import React from "react";
 import RegisterForm from "./resgiter-form";
 import LoginForm from "./login-form";
 import { App } from "antd";
@@ -8,8 +8,6 @@ import { useDispatch } from "react-redux";
 import { login } from "@/redux/user.slice";
 import { User } from "@/models/user.model";
 import { Role } from "@/constants/app.const";
-import useLocalStorage from "@/hooks/use-local-storage";
-import { LocalStorageKey } from "@/constants/local-storage-key.const";
 
 interface Props {
   register: boolean;
