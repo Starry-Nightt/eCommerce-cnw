@@ -1,12 +1,23 @@
 // pages/[userId].tsx
 import React, { useState, useEffect } from "react";
-import { getUserById } from "@/services/userServices";
+import { getUserById, updateUser } from "@/services/user.services";
 import FormRules from "@/utils/form-rules";
-import { Button, Divider, Form, Input } from "antd";
+import { Button, Divider, Form, Input, message } from "antd";
 import { Typography } from "antd";
 import { notification } from "antd";
+import { EditOutlined } from "@ant-design/icons";
+import { Modal } from "antd";
 
 const { Title } = Typography;
+interface User {
+  id: number;
+  name: string;
+  age: number;
+  address: string;
+  phone: string;
+  email: string;
+  avatar: string;
+}
 
 const initialFormValues = (user, isEditing) => ({
   name: user ? user.name : "",
@@ -14,6 +25,7 @@ const initialFormValues = (user, isEditing) => ({
   address: user ? user.address : "",
   phone: user ? user.phone : "",
   email: user ? user.email : "",
+  image: user ? user.avatar : "",
 });
 
 const UserProfile: React.FC = ({ userId }: any) => {
@@ -21,16 +33,21 @@ const UserProfile: React.FC = ({ userId }: any) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formValues, setFormValues] = useState(initialFormValues(null, false));
   const [buttonType, setButtonType] = useState<"button" | "submit">("button");
+  const [form] = Form.useForm();
+
+  const [imageLink, setImageLink] = useState<string | null>(null);
+  // State to control the visibility of the modal
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userData = await getUserById(userId);
+        const userData = await getUserById("656c7f06657dab52d0053101");
         setUser(userData);
         setFormValues(initialFormValues(userData, isEditing));
         setButtonType(!isEditing ? "submit" : "button");
       } catch (error) {
-        // Handle errors if needed
+        console.error("Error ufetchUser", error);
       }
     };
     fetchUser();
@@ -38,29 +55,71 @@ const UserProfile: React.FC = ({ userId }: any) => {
 
   const onFinish = async (values) => {
     try {
-      // Call your API to update user data here
-      // For example, await updateUserData(userId, values);
-      if (!isEditing) {
-        setUser({ ...user, ...values });
-        notification.success({
-          message: "Thông báo",
-          description: "Cập nhật thông tin thành công!",
-        });
-        setIsEditing(false);
+      if (isEditing) {
+        // event.preventDefault()
+        const userId = "656c7f06657dab52d0053101";
+        const userUpdate = {
+          name: values.name,
+          age: values.age,
+          address: values.address,
+          phone: values.phone,
+          email: values.email,
+        };
+        console.log(userUpdate)
+        const updateError = await updateUserAndHandleErrors(userId, userUpdate);
+
+        if (!updateError) {
+          notification.success({
+            message: "Thông báo",
+            description: "Cập nhật thông tin thành công!",
+          });
+          setIsEditing(false);
+        } else {
+          console.error("Error updating user data:", updateError);
+          notification.error({
+            message: "Lỗi",
+            description: "Đã xảy ra lỗi khi cập nhật thông tin.",
+          });
+        }
       }
     } catch (error) {
-      console.error("Error updating user data:", error);
-      notification.error({
-        message: "Lỗi",
-        description: "Đã xảy ra lỗi khi cập nhật thông tin.",
-      });
+      console.error("Error in onFinish:", error);
     }
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async (event) => {
+    // event.
     setIsEditing((prevEditing) => !prevEditing);
     setFormValues(initialFormValues(user, !isEditing));
     setButtonType(isEditing ? "button" : "submit");
+  };
+
+  const updateUserAndHandleErrors = async (userId, userData) => {
+    try {
+      await updateUser(userId, userData);
+      return null;
+    } catch (error) {
+      return error.message || "Có lỗi xảy ra khi cập nhật thông tin user";
+    }
+  };
+
+  const handleEditIconClick = () => {
+    setIsModalVisible(true);
+  };
+
+  // Function to handle the submission of the modal form
+  const handleModalSubmit = () => {
+    // Add validation or additional handling if needed
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      image: imageLink,
+    }));
+    setIsModalVisible(false);
+  };
+
+  // Function to handle the cancellation of the modal
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
   };
 
   return (
@@ -78,10 +137,26 @@ const UserProfile: React.FC = ({ userId }: any) => {
           <div className="form-user-avatar">
             <Form layout="horizontal" initialValues={formValues}>
               <img
-                src="https://anhcuoiviet.vn/wp-content/uploads/2023/02/avatar-ngau-nam-2.jpg"
+                src={
+                  formValues.image ||
+                  "https://anhcuoiviet.vn/wp-content/uploads/2023/02/avatar-ngau-nam-2.jpg"
+                }
                 alt="Description"
                 style={{ width: "100%", borderRadius: "50%" }}
               />
+              <EditOutlined onClick={handleEditIconClick} />
+              {/* Add Modal for entering image link */}
+              <Modal
+                title="Enter Image Link"
+                visible={isModalVisible}
+                onOk={handleModalSubmit}
+                onCancel={handleModalCancel}
+              >
+                <Input
+                  value={imageLink}
+                  onChange={(e) => setImageLink(e.target.value)}
+                />
+              </Modal>
               <Form.Item label="Tài khoản" name="email">
                 <Input size="large" value={`${user.email}`} readOnly />
               </Form.Item>
