@@ -5,6 +5,7 @@ import FormRules from "@/utils/form-rules";
 import { Button, Divider, Form, Input } from "antd";
 import { Typography } from "antd";
 import { notification } from "antd";
+import useAuth from "@/hooks/use-auth";
 
 const { Title } = Typography;
 
@@ -21,6 +22,7 @@ const UserProfile: React.FC = ({ userId }: any) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formValues, setFormValues] = useState(initialFormValues(null, false));
   const [buttonType, setButtonType] = useState<"button" | "submit">("button");
+  const {loggedIn} = useAuth()
 
   useEffect(() => {
     const fetchUser = async () => {

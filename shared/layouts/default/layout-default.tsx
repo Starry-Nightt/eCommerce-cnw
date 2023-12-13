@@ -22,7 +22,7 @@ function LayoutDefault({ children }) {
         <Footer />
       </Layout>
       <Modal open={showingRegister} onCancel={onHideRegister} footer={null}>
-        <AuthForm register={true} />
+        <AuthForm register={true} afterSubmit={onHideRegister}  />
       </Modal>
       <Modal open={showingLogin} onCancel={onHideLogin} footer={null}>
         <AuthForm register={false} afterSubmit={onHideLogin} />

@@ -1,9 +1,9 @@
-import http from "./http.service";
+import httpTest from "./http.service";
 import { Publisher } from "@/models/publisher.model";
 
 class AppPublisherService {
   getAllPublishers = (): Promise<Publisher[]> => {
-    return http.get("/publishers");
+    return httpTest.get("/publishers");
   };
 }
 

@@ -77,7 +77,9 @@ const Index = ({
     selectedPublishers.forEach((item) =>
       params.append("publishers", item.slug)
     );
-    params.append("q", q);
+    if (q.length){
+      params.append("q", q);
+    }
     const queryString = params.toString();
     setQuery(queryString);
   }, [selectedAuthor, selectedCategories, selectedPublishers, q]);

@@ -1,8 +1,9 @@
 export interface RegisterDetail {
-  username: string;
+  name: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  confirmPassword?: string;
+  phone?: string;
 }
 
 export interface LoginDetail {

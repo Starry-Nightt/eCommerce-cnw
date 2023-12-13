@@ -13,17 +13,28 @@ import NavList from "@/components/nav/nav-list";
 import { MenuOutlined } from "@ant-design/icons";
 import useAuthModal from "@/hooks/use-auth-modal";
 import { showLogin } from "@/redux/auth-modal.slice";
+import { useRouter } from "next/router";
+import { LocalStorageKey } from "@/constants/local-storage-key.const";
+import useLocalStorage from "@/hooks/use-local-storage";
 
 function Header() {
   const { loggedIn, user } = useSelector((state: RootState) => state.user);
-  const {showingLogin, showingRegister, onShowLogin, onShowRegister, onHideLogin, onHideRegister} = useAuthModal()
+  const {
+    showingLogin,
+    showingRegister,
+    onShowLogin,
+    onShowRegister,
+    onHideLogin,
+    onHideRegister,
+  } = useAuthModal();
 
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
-
+  const router = useRouter();
   const showDrawer = () => {
     setOpenDrawer(true);
   };
+  const [_, __, clearToken] = useLocalStorage(LocalStorageKey.TOKEN);
 
   const onCloseDrawer = () => {
     setOpenDrawer(false);
@@ -41,7 +52,11 @@ function Header() {
     {
       key: "3",
       label: <span>Đăng xuất</span>,
-      onClick: () => dispatch(logout()),
+      onClick: () => {
+        dispatch(logout());
+        router.push("/");
+        clearToken();
+      },
     },
   ];
 
@@ -67,7 +82,7 @@ function Header() {
           <div className="flex items-center gap-10">
             <Logo />
             <div className="hidden md:block">
-              <NavList items={navLinks} textWhite/>
+              <NavList items={navLinks} textWhite />
             </div>
           </div>
           <div className="hidden md:flex items-center gap-10">

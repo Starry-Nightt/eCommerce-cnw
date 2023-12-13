@@ -11,9 +11,10 @@ interface Props {
   onToggleForm: () => void;
   onFinish: (detail: RegisterDetail) => void
   onFinishFailed: (text: string) => void
+  loading: boolean
 }
 
-function RegisterForm({ value, onToggleForm, onFinish, onFinishFailed }: Props) {
+function RegisterForm({ value, onToggleForm, onFinish, onFinishFailed, loading }: Props) {
   const [form] = Form.useForm<RegisterDetail>();
 
   const confirmPasswordRule = ({ getFieldValue }) => ({
@@ -38,7 +39,7 @@ function RegisterForm({ value, onToggleForm, onFinish, onFinishFailed }: Props) 
     <Form form={form} layout="vertical" onFinish={onFinishForm} onFinishFailed={() => onFinishFailed('Submit failed !')}>
       <Title level={3}>Đăng ký</Title>
       <Divider />
-      <Form.Item label="Tên đăng nhập" name="username" rules={FormRules.username}>
+      <Form.Item label="Tên đăng nhập" name="name" rules={FormRules.name}>
         <Input />
       </Form.Item>
       <Form.Item label="Email" name="email" rules={FormRules.email}>
@@ -58,11 +59,11 @@ function RegisterForm({ value, onToggleForm, onFinish, onFinishFailed }: Props) 
         <Input.Password />
       </Form.Item>
       <div className="flex justify-between items-end">
-        <Button type="link" className="-ml-3" onClick={onToggleForm}>
+        <Button type="link" className="-ml-3" onClick={onToggleForm} disabled={loading}>
           Đã có tài khoản ? Đăng nhập
         </Button>
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" disabled={loading}>
             Đăng ký
           </Button>
         </Form.Item>
