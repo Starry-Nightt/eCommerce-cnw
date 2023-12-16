@@ -1,23 +1,6 @@
 // services/userService.ts
 import axios from "axios";
 
-// export const getUserById = async (userId: string) => {
-//   try {
-//     return {
-//       id:1,
-//       name: "TienDQ",
-//       age: 18,
-//       email: "test@gmail.com",
-//       phone: "0123456789",
-//       address: "Hanoi",
-//       avatar:""
-//     };
-//   } catch (error) {
-//     console.error("Error fetching user:", error);
-//     throw error;
-//   }
-// };
-
 export const getUserById = async (userId: string) => {
   try {
     const response = await axios.get(
