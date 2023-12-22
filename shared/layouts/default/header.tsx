@@ -16,9 +16,9 @@ import { showLogin } from "@/redux/auth-modal.slice";
 import { useRouter } from "next/router";
 import { LocalStorageKey } from "@/constants/local-storage-key.const";
 import useLocalStorage from "@/hooks/use-local-storage";
+import useAuth from "@/hooks/use-auth";
 
 function Header() {
-  const { loggedIn, user } = useSelector((state: RootState) => state.user);
   const {
     showingLogin,
     showingRegister,
@@ -31,6 +31,7 @@ function Header() {
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
   const router = useRouter();
+  const { loggedIn, user } = useAuth();
   const showDrawer = () => {
     setOpenDrawer(true);
   };
@@ -43,7 +44,11 @@ function Header() {
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: <Link href="/profile/1">Thông tin cá nhân</Link>,
+      label: (
+        <Link href={`${user?.isAdmin ? "/admin-profile/1" : "/profile/1"}`}>
+          Thông tin cá nhân
+        </Link>
+      ),
     },
     {
       key: "2",

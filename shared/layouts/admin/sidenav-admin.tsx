@@ -1,10 +1,12 @@
 import React, { ReactNode, useState } from "react";
 import {
-  UploadOutlined,
   UserOutlined,
-  VideoCameraOutlined,
+  BookOutlined,
+  AppstoreOutlined,
+  AreaChartOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
+import { useRouter } from "next/router";
 
 const { Header, Sider, Content } = Layout;
 
@@ -13,6 +15,7 @@ interface Props {
 }
 
 function SideNavAdmin({ collapsed }: Props) {
+  const router = useRouter();
   return (
     <Sider trigger={null} collapsible collapsed={collapsed}>
       <div className="w-5/6 my-4 mx-auto rounded-md h-8 bg-slate-600" />
@@ -22,19 +25,33 @@ function SideNavAdmin({ collapsed }: Props) {
         defaultSelectedKeys={["1"]}
         items={[
           {
-            key: "1",
-            icon: <UserOutlined />,
-            label: "nav 1",
+            key: "4",
+            icon: <AreaChartOutlined />,
+            label: "Thống kê",
+            style: { fontWeight: 500, fontSize: 14, margin: "12px 0" },
+            onClick: () => router.push("/dashboard"),
           },
+
           {
             key: "2",
-            icon: <VideoCameraOutlined />,
-            label: "nav 2",
+            icon: <BookOutlined />,
+            label: "Quản lý sản sách",
+            style: { fontWeight: 500, fontSize: 14, margin: "12px 0" },
+            onClick: () => router.push("/book-management"),
           },
           {
             key: "3",
-            icon: <UploadOutlined />,
-            label: "nav 3",
+            icon: <AppstoreOutlined />,
+            label: "Quản lý đơn hàng",
+            style: { fontWeight: 500, fontSize: 14, margin: "12px 0" },
+            onClick: () => router.push("/order-management"),
+          },
+          {
+            key: "1",
+            icon: <UserOutlined />,
+            label: "Quản lý người dùng",
+            style: { fontWeight: 500, fontSize: 14, margin: "12px 0" },
+            onClick: () => router.push("/user-management"),
           },
         ]}
       />

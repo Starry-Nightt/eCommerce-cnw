@@ -29,6 +29,10 @@ class AppBookService {
   getBookById = (bookId: String): Promise<Book> => {
     return httpTest.get(`/books/${bookId}`);
   };
+
+  getCommentsOfBook = (bookId: String): Promise<Comment[]> => {
+    return httpTest.get(`/comments/${bookId}`);
+  };
 }
 
 const BookService = new AppBookService();

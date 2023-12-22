@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { Role } from "@/constants/app.const";
 import { useRouter } from "next/router";
 import { ROUTE_PATH } from "@/constants/route-path.const";
+import Head from "next/head";
 
 interface Props {
   children: ReactNode;
@@ -26,6 +27,9 @@ function LayoutAdmin({ children }: Props) {
 
   return (
     <div className="min-h-screen flex">
+      <Head>
+        <title>Quản lý eCommerce</title>
+      </Head>
       <Layout className="flex-1">
         {ok && (
           <>

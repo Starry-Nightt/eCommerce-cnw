@@ -32,7 +32,6 @@ function RegisterForm({ value, onToggleForm, onFinish, onFinishFailed, loading }
 
   const onFinishForm = (formValue: RegisterDetail) => {
     onFinish(formValue)
-    form.resetFields()
   }
 
   return (
