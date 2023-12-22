@@ -1,4 +1,4 @@
-import http from "@/services/http.service";
+import httpTest from "@/services/http.service";
 import { useCallback, useEffect, useState } from "react";
 
 function useFetch(url: string, params?: Record<string, any>) {
@@ -9,7 +9,7 @@ function useFetch(url: string, params?: Record<string, any>) {
   useEffect(() => {
     setLoading(true);
     const controller = new AbortController();
-    http
+    httpTest
       .get(url, { signal: controller.signal, params })
       .then((data) => {
         setError(null)
@@ -28,7 +28,7 @@ function useFetch(url: string, params?: Record<string, any>) {
 
   const refetch = useCallback(() => {
     setLoading(true);
-    http
+    httpTest
       .get(url)
       .then((data) => {
         setData(data);

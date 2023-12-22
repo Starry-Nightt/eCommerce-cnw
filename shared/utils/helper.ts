@@ -1,11 +1,14 @@
 import { LocalStorageKey } from "@/constants/local-storage-key.const";
 
 export function getSavedValue(key: LocalStorageKey, initialValue: any) {
-  const savedValue = localStorage.getItem(key);
-  if (savedValue) return JSON.parse(savedValue);
+  if (typeof window !== "undefined") {
+    const savedValue = localStorage.getItem(key);
+    if (savedValue) return JSON.parse(savedValue);
 
-  if (initialValue instanceof Function) return initialValue();
-  return initialValue ?? "";
+    if (initialValue instanceof Function) return initialValue();
+    return initialValue ?? "";
+  }
+  return "";
 }
 
 export function getSortedArrayByKey(data: any[], key: string) {

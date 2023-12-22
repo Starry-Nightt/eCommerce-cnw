@@ -13,17 +13,29 @@ import NavList from "@/components/nav/nav-list";
 import { MenuOutlined } from "@ant-design/icons";
 import useAuthModal from "@/hooks/use-auth-modal";
 import { showLogin } from "@/redux/auth-modal.slice";
+import { useRouter } from "next/router";
+import { LocalStorageKey } from "@/constants/local-storage-key.const";
+import useLocalStorage from "@/hooks/use-local-storage";
+import useAuth from "@/hooks/use-auth";
 
 function Header() {
-  const { loggedIn, user } = useSelector((state: RootState) => state.user);
-  const {showingLogin, showingRegister, onShowLogin, onShowRegister, onHideLogin, onHideRegister} = useAuthModal()
+  const {
+    showingLogin,
+    showingRegister,
+    onShowLogin,
+    onShowRegister,
+    onHideLogin,
+    onHideRegister,
+  } = useAuthModal();
 
   const dispatch = useDispatch();
   const [openDrawer, setOpenDrawer] = useState(false);
-
+  const router = useRouter();
+  const { loggedIn, user } = useAuth();
   const showDrawer = () => {
     setOpenDrawer(true);
   };
+  const [_, __, clearToken] = useLocalStorage(LocalStorageKey.TOKEN);
 
   const onCloseDrawer = () => {
     setOpenDrawer(false);
@@ -32,7 +44,11 @@ function Header() {
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: <Link href="/profile/1">Thông tin cá nhân</Link>,
+      label: (
+        <Link href={`${user?.isAdmin ? "/admin-profile/1" : "/profile/1"}`}>
+          Thông tin cá nhân
+        </Link>
+      ),
     },
     {
       key: "2",
@@ -41,7 +57,38 @@ function Header() {
     {
       key: "3",
       label: <span>Đăng xuất</span>,
-      onClick: () => dispatch(logout()),
+      onClick: () => {
+        dispatch(logout());
+        router.push("/");
+        clearToken();
+      },
+    },
+  ];
+  const itemsAdmin: MenuProps["items"] = [
+    {
+      key: "1",
+      label: (
+        <Link href={`${user?.isAdmin ? "/admin-profile/1" : "/profile/1"}`}>
+          Thông tin cá nhân
+        </Link>
+      ),
+    },
+    {
+      key: "2",
+      label: <Link href="/test">Đổi mật khẩu</Link>,
+    },
+    {
+      key: "admin-1",
+      label: <Link href="/user-management">Quay về trang admin</Link>,
+    },
+    {
+      key: "3",
+      label: <span>Đăng xuất</span>,
+      onClick: () => {
+        dispatch(logout());
+        router.push("/");
+        clearToken();
+      },
     },
   ];
 
@@ -59,6 +106,16 @@ function Header() {
       path: ROUTE_PATH.ORDER,
     },
   ];
+  const navLinksAdmin = [
+    {
+      name: "Trang chủ",
+      path: ROUTE_PATH.HOME,
+    },
+    {
+      name: "Tất cả sách",
+      path: ROUTE_PATH.BOOK,
+    }
+  ];
 
   return (
     <>
@@ -67,12 +124,16 @@ function Header() {
           <div className="flex items-center gap-10">
             <Logo />
             <div className="hidden md:block">
-              <NavList items={navLinks} textWhite/>
+              <NavList items={user?.isAdmin ? navLinksAdmin : navLinks} textWhite />
             </div>
           </div>
           <div className="hidden md:flex items-center gap-10">
             {loggedIn ? (
-              <AvatarHeader user={user} items={items} textWhite />
+              <AvatarHeader
+                user={user}
+                items={user?.isAdmin ? itemsAdmin : items}
+                textWhite
+              />
             ) : (
               <Space direction="horizontal">
                 <Button type="primary" onClick={onShowLogin}>
@@ -103,7 +164,11 @@ function Header() {
           <NavList items={navLinks} vertical />
           <div>
             {loggedIn ? (
-              <AvatarHeader user={user} items={items} textWhite />
+              <AvatarHeader
+                user={user}
+                items={user?.isAdmin ? itemsAdmin : items}
+                textWhite
+              />
             ) : (
               <Space direction="vertical" className="w-full">
                 <Button type="primary" onClick={onShowLogin} block>

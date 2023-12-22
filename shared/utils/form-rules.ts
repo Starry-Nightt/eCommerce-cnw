@@ -1,25 +1,24 @@
 const FormRules = {
   email: [
-    { required: true, message: "Please input your email!" },
+    { required: true, message: "Vui lòng nhập email" },
     {
       pattern:
         /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-      message: "Invalid email",
+      message: "Email không hợp lệ",
     },
   ],
-  username: [{ required: true, message: "Please input your username!" }],
+  name: [{ required: true, message: "Vui lòng nhập tên đăng nhập" }],
   password: [
-    { required: true, message: "Please input your password!" },
-    { min: 6, message: "Password should have at least 6 character" },
+    { required: true, message: "Vui lòng nhập mật khẩu" },
+    { min: 6, message: "Mật khẩu phải gồm ít nhất 6 ký tự" },
   ],
-  phone:[
-    { required: true, message: "Please input your phone!" },
+  phone: [
+    { required: true, message: "Vui lòng nhập số điện thoại" },
     {
-      pattern:
-      /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
-      message: "Invalid phone number",
+      pattern: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
+      message: "Số điện thoại không hợp lệ",
     },
-  ]
+  ],
 };
 
 export default FormRules;

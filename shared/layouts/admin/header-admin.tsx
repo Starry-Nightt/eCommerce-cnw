@@ -4,24 +4,13 @@ import { Layout, Button, MenuProps } from "antd";
 import Link from "next/link";
 import AvatarHeader from "@/components/avatar-header";
 import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "@/redux/user.slice";
+import router from "next/router";
+import useLocalStorage from "@/hooks/use-local-storage";
+import { LocalStorageKey } from "@/constants/local-storage-key.const";
 
 const { Header } = Layout;
-
-const items: MenuProps["items"] = [
-  {
-    key: "1",
-    label: <Link href="/profile/1">Thông tin cá nhân</Link>,
-  },
-  {
-    key: "2",
-    label: <Link href="/test">Đổi mật khẩu</Link>,
-  },
-  {
-    key: "3",
-    label: <Link href="/counter">Đăng xuất</Link>,
-  },
-];
 
 interface Props {
   collapsed: boolean;
@@ -30,7 +19,31 @@ interface Props {
 
 function HeaderAdmin({ collapsed, setCollapsed }: Props) {
   const { loggedIn, user } = useSelector((state: RootState) => state.user);
-
+  const dispatch = useDispatch();
+  const [_, __, clearToken] = useLocalStorage(LocalStorageKey.TOKEN) 
+  const items: MenuProps["items"] = [
+    {
+      key: "1",
+      label: <Link href="/profile/1">Thông tin cá nhân</Link>,
+    },
+    {
+      key: "2",
+      label: <Link href={`${user?.isAdmin ? '/test' : '/'}`}>Đổi mật khẩu</Link>,
+    },
+    {
+      key: "4",
+      label: <Link href='/'>Xem trang khách</Link>,
+    },
+    {
+      key: "3",
+      label: <span>Đăng xuất</span>,
+      onClick: () => {
+        dispatch(logout());
+        router.push("/");
+        clearToken("")
+      },
+    },
+  ];
   return (
     <Header
       style={{ padding: 16, background: "#fff" }}
