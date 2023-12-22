@@ -1,6 +1,5 @@
 export default function handler(req, res) {
   const { publisherId } = req.query;
-  console.log(publisherId);
   return res
     .status(200)
     .json(data.filter((it) => it.publisherId === publisherId));

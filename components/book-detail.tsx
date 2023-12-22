@@ -1,12 +1,12 @@
 import useToggle from "@/hooks/use-toggle";
-import { Book } from "@/models/book.model";
+import { Book, BookDetailInfo } from "@/models/book.model";
 import { dateFormatted } from "@/utils/helper";
 import { Divider, Rate, Skeleton, Space, Tag, Typography } from "antd";
 import React from "react";
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 
 interface Props {
-  book: Book;
+  book: BookDetailInfo;
 }
 
 function BookDetail({ book }: Props) {
@@ -27,7 +27,7 @@ function BookDetail({ book }: Props) {
     <Space direction="vertical" className="w-full">
       <Typography.Title>{book.name}</Typography.Title>
       <h3 className="text-2xl font-light tracking-wide mb-1">
-        {book.authorId}
+        {book.author}
       </h3>
       <div className="flex items-center gap-6">
         <Rate
@@ -39,7 +39,7 @@ function BookDetail({ book }: Props) {
           4.2/5
         </h4>
         <span className="text-slate-700 font-semibold">
-          {book.viewCount} viewer
+          {book.view_count} viewer
         </span>
       </div>
       <Typography.Paragraph className="text-base mt-3">
@@ -70,12 +70,12 @@ function BookDetail({ book }: Props) {
           Thể loại
         </span>
         <Tag bordered={false} color="green">
-          {book.categoryId}
+          {book.category}
         </Tag>
       </div>
       <div className="text-slate-700 font-medium text-sm">
-        <p className="mb-2">Ngày xuất bản: {dateFormatted(book.releaseDate)}</p>
-        <p className="mb-2">Nhà xuất bản: {book.publisherId}</p>
+        <p className="mb-2">Ngày xuất bản: {dateFormatted(book.release_date)}</p>
+        <p className="mb-2">Nhà xuất bản: {book.nsx}</p>
       </div>
     </Space>
   );

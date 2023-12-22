@@ -1,41 +1,51 @@
 import { Avatar, Button, Flex, Input, Rate } from "antd";
 import useAuth from "@/hooks/use-auth";
+import { UserOutlined, DownOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
 import React, { useState } from "react";
 import { Comment } from "@/models/comment.model";
+import AvatarHeader from "./avatar-header";
 
 interface Props {
-    onAddComment: (comment: Comment) => void
+  onAddComment: (comment: Comment) => void;
 }
 
-function BookUserComment({onAddComment}: Props) {
+function BookUserComment({ onAddComment }: Props) {
   const { user, loggedIn } = useAuth();
   const [comment, setComment] = useState("");
-  const [rate, setRate] = useState(null)
+  const [rate, setRate] = useState(null);
 
   const onComment = () => {
     const newComment: Comment = {
-        id: `${Math.floor(Math.random() * 10000)}`,
-        email: user.email,
-        body: comment,
-        score: rate,
-        userId: user.id
-    }
-    onAddComment(newComment)
-  }
+      id: `${Math.floor(Math.random() * 10000)}`,
+      email: user.email,
+      body: comment,
+      score: rate,
+      userId: user.id,
+    };
+    onAddComment(newComment);
+  };
 
   return (
     <>
       {loggedIn ? (
         <div className="p-3 flex flex-col gap-3">
           <div className="flex gap-2 items-center">
-            <Avatar src={user.avatar} />
+            {user.avatar ? (
+              <Avatar src={user.avatar} />
+            ) : (
+              <Avatar
+                size="default"
+                icon={<UserOutlined />}
+                style={{ backgroundColor: "#87d068" }}
+              />
+            )}
 
             <span>{user?.email}</span>
           </div>
-          <Rate value={rate} onChange={(e) => setRate(e)} ></Rate>
+          <Rate value={rate} onChange={(e) => setRate(e)}></Rate>
           <TextArea
             showCount
             maxLength={100}
@@ -45,7 +55,13 @@ function BookUserComment({onAddComment}: Props) {
             className="my-2"
           />
           <div className="flex justify-end mt-3">
-            <Button type="primary" disabled={!rate || comment.trim().length == 0} onClick={onComment}>Bình luận</Button>
+            <Button
+              type="primary"
+              disabled={!rate || comment.trim().length == 0}
+              onClick={onComment}
+            >
+              Bình luận
+            </Button>
           </div>
         </div>
       ) : (

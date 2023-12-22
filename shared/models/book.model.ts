@@ -1,8 +1,8 @@
 export class Book {
-  id: string;
-  releaseDate: string;
+  _id: string;
+  release_date: string;
   describe: string;
-  viewCount: number;
+  view_count: number;
   sales: number;
   categoryId: string;
   name: string;
@@ -10,4 +10,10 @@ export class Book {
   image: string;
   publisherId: string;
   authorId: string;
+}
+
+export class BookDetailInfo extends Book {
+  category: string;
+  nsx: string;
+  author: string;
 }

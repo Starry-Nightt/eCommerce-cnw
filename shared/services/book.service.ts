@@ -1,13 +1,13 @@
 import { Book } from "@/models/book.model";
-import httpTest from "./http.service";
+import httpTest, { http } from "./http.service";
 import { Category } from "@/models/category.model";
 
 class AppBookService {
-  getAllBook = (queryString?: string): Promise<Book[]> => {
+  getAllBook = (queryString?: string): Promise<any> => {
     if (queryString && queryString.length > 0) {
-      return httpTest.get(`/books?${queryString}`);
+      return http.get(`/book/allbook?${queryString}`);
     }
-    return httpTest.get("/books");
+    return http.get("/book/allbook");
   };
 
   getAllCategories = (): Promise<Category[]> => {
@@ -27,7 +27,7 @@ class AppBookService {
   };
 
   getBookById = (bookId: String): Promise<Book> => {
-    return httpTest.get(`/books/${bookId}`);
+    return http.get(`/book/${bookId}`);
   };
 
   getCommentsOfBook = (bookId: String): Promise<Comment[]> => {

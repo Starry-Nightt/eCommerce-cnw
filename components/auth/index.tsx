@@ -31,7 +31,7 @@ function AuthForm({ register, afterSubmit }: Props) {
       const res = await UserService.login(detail);
       const user: User = [res?.user].map((it) => ({
         ...it,
-        isAdmin: true
+        isAdmin: false
       }))[0];
       setToken(res?.token || "");
       dispatch(login(user));
@@ -41,7 +41,6 @@ function AuthForm({ register, afterSubmit }: Props) {
         router.push("/test");
       }
     } catch (err) {
-      console.log(err)
       notification.error({
         message: err?.message ?? `Đã có lỗi xảy ra. Hãy thử lại`,
         placement: "topLeft",
