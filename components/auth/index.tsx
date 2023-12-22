@@ -37,7 +37,7 @@ function AuthForm({ register, afterSubmit }: Props) {
       dispatch(login(user));
       message.success("Login success !");
       afterSubmit?.();
-      if (user.isAdmin) {
+      if (user?.isAdmin) {
         router.push("/test");
       }
     } catch (err) {

@@ -13,6 +13,7 @@ import {
   vndCurrencyFormat,
 } from "@/utils/helper";
 import { useRouter } from "next/router";
+import useAuth from "@/hooks/use-auth";
 
 interface Props {
   book: Book;
@@ -20,6 +21,7 @@ interface Props {
 
 function BookListItem({ book }: Props) {
   const router = useRouter();
+  const {user} = useAuth()
 
   const onViewDetail = () => {
     router.push(`/book/${book.id}`)
@@ -49,7 +51,7 @@ function BookListItem({ book }: Props) {
           className="cursor-pointer"
         />
       }
-      actions={[<ShoppingCartOutlined />]}
+      actions={!(user && user?.isAdmin) && [<ShoppingCartOutlined />]}
     >
       <Meta title={book.name} description={description} />
     </Card>

@@ -20,7 +20,7 @@ function LayoutAdmin({ children }: Props) {
   const router = useRouter();
   const [ok, setOk] = useState(false);
   useEffect(() => {
-    if (!loggedIn || !user.isAdmin) {
+    if (!loggedIn || !user?.isAdmin) {
       router.push(ROUTE_PATH.PAGE_403);
     } else setOk(true);
   }, []);

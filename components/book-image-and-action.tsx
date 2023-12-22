@@ -26,7 +26,7 @@ function BookImageAndAction({ book }: Props) {
 
   const { message } = App.useApp();
 
-  const { loggedIn } = useAuth();
+  const { loggedIn, user } = useAuth();
   const { onShowLogin } = useAuthModal();
   const [value, setValue] = useState(null);
 
@@ -55,34 +55,37 @@ function BookImageAndAction({ book }: Props) {
       <div className="w-full flex justify-center mb-5">
         <Image
           src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-          width={200}
         />
       </div>
-      <Button
-        type="primary"
-        shape="round"
-        block
-        size="large"
-        icon={<ShoppingCartOutlined />}
-        onClick={onAddToCart}
-      >
-        Thêm vào giỏ hàng
-      </Button>
-      <Button
-        size="large"
-        shape="round"
-        block
-        icon={<ShoppingCartOutlined />}
-        onClick={onBuy}
-      >
-        Mua ngay {vndCurrencyFormat(book?.price)}
-      </Button>
-      <div className="flex justify-center flex-col items-center">
-        <Rate tooltips={desc} onChange={onRating} value={value} />
-        <span className="mt-2 font-semibold font-sans tracking-wide text-base">
-          Đánh giá điểm
-        </span>
-      </div>
+      {!(user && user?.isAdmin) && (
+        <div className="flex flex-col gap-5">
+          <Button
+            type="primary"
+            shape="round"
+            block
+            size="large"
+            icon={<ShoppingCartOutlined />}
+            onClick={onAddToCart}
+          >
+            Thêm vào giỏ hàng
+          </Button>
+          <Button
+            size="large"
+            shape="round"
+            block
+            icon={<ShoppingCartOutlined />}
+            onClick={onBuy}
+          >
+            Mua ngay {vndCurrencyFormat(book?.price)}
+          </Button>
+          <div className="flex justify-center flex-col items-center">
+            <Rate tooltips={desc} onChange={onRating} value={value} />
+            <span className="mt-2 font-semibold font-sans tracking-wide text-base">
+              Đánh giá điểm
+            </span>
+          </div>
+        </div>
+      )}
     </Space>
   );
 }

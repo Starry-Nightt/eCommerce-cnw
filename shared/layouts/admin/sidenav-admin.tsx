@@ -35,7 +35,7 @@ function SideNavAdmin({ collapsed }: Props) {
           {
             key: "2",
             icon: <BookOutlined />,
-            label: "Quản lý sản sách",
+            label: "Quản lý sách",
             style: { fontWeight: 500, fontSize: 14, margin: "12px 0" },
             onClick: () => router.push("/book-management"),
           },
