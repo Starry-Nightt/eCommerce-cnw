@@ -1,14 +1,15 @@
 import React from "react";
 import type { ColumnsType } from "antd/es/table";
-import { Button, Skeleton, Table } from "antd";
+import { Button, Popconfirm, Skeleton, Table, message } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
 interface Props {
   columns: ColumnsType;
   data: any[];
+  onDeleteAll?: () => void;
 }
 
-function CustomTable({ columns, data }: Props) {
+function CustomTable({ columns, data, onDeleteAll }: Props) {
   if (!data)
     return (
       <>
@@ -77,11 +78,24 @@ function CustomTable({ columns, data }: Props) {
         columns={_columns}
         dataSource={_data}
       />
-      <div className="absolute bottom-4 left-2">
-        <Button type="text" danger icon={<DeleteOutlined />}>
-          Xóa tất cả
-        </Button>
-      </div>
+      {onDeleteAll && (
+        <div className="absolute bottom-4 left-2">
+          <Popconfirm
+            title="Xác nhận xóa tất cả"
+            icon={null}
+            onConfirm={() => {
+              message.success("Xóa thành công");
+              onDeleteAll();
+            }}
+            okText="Xác nhận"
+            cancelText="Hủy"
+          >
+            <Button type="text" danger icon={<DeleteOutlined />}>
+              Xóa tất cả
+            </Button>
+          </Popconfirm>
+        </div>
+      )}
     </div>
   );
 }

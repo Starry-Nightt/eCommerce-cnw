@@ -1,15 +1,33 @@
 import CustomTable from "@/components/table";
 import LayoutAdmin from "@/layouts/admin/layout-admin";
 import UserService from "@/services/user.service";
-import { Button, Space, Tag, Typography } from "antd";
+import { Button, Popconfirm, Space, Tag, Typography, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { GetServerSideProps } from "next";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { User } from "@/models/user.model";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import TableSearch from "@/components/table/table-search";
+import { SearchProps } from "antd/es/input";
 
 const Index = ({ users }) => {
-  const [data, setData] = useState(users);
+  const [data, setData] = useState<any[]>(users);
+  const [key, setKey] = useState("");
+
+  useEffect(() => {
+    if (key.trim().length) {
+      const _data = data.filter(
+        (it) =>
+          it.name.includes(key) ||
+          it.email.includes(key) ||
+          it.email.includes(key)
+      );
+      setData(_data);
+    } else {
+      setData(users);
+    }
+  }, [key]);
+
   const onDeleteUser = async (id: string) => {
     await UserService.deleteUser(id);
     setData((prev) => prev.filter((it) => it._id !== id));
@@ -59,18 +77,38 @@ const Index = ({ users }) => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button
-            danger
-            shape="round"
-            icon={<DeleteOutlined />}
-            onClick={() => onDeleteUser(record.id)}
-          />
+          <Popconfirm
+            title="Xóa người dùng"
+            description="Bạn có chắc chắn muốn xóa người dùng này?"
+            icon={null}
+            onConfirm={() => {
+              message.success("Xóa thành công");
+              onDeleteUser(record.id);
+            }}
+            okText="Xác nhận"
+            cancelText="Hủy"
+          >
+            <Button danger shape="round" icon={<DeleteOutlined />} />
+          </Popconfirm>
         </Space>
       ),
     },
   ];
 
-  return <CustomTable data={data} columns={columns} />;
+  const onDeleteAll = () => {
+    setData([]);
+  };
+
+  const onSearch: SearchProps["onSearch"] = (value) => setKey(value);
+
+  return (
+    <>
+      <div className="flex justify-end">
+        <TableSearch className="mb-4 ml-auto" onSearch={onSearch} />
+      </div>
+      <CustomTable data={data} columns={columns} onDeleteAll={onDeleteAll} />
+    </>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
