@@ -20,19 +20,25 @@ interface Props {
 function HeaderAdmin({ collapsed, setCollapsed }: Props) {
   const { loggedIn, user } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
-  const [_, __, clearToken] = useLocalStorage(LocalStorageKey.TOKEN) 
+  const [_, __, clearToken] = useLocalStorage(LocalStorageKey.TOKEN);
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: <Link href="/profile/1">Thông tin cá nhân</Link>,
+      label: (
+        <Link href={`${user?.isAdmin ? "/admin-profile/1" : "/profile/1"}`}>
+          Thông tin cá nhân
+        </Link>
+      ),
     },
     {
       key: "2",
-      label: <Link href={`${user?.isAdmin ? '/test' : '/'}`}>Đổi mật khẩu</Link>,
+      label: (
+        <Link href={`${user?.isAdmin ? "/test" : "/"}`}>Đổi mật khẩu</Link>
+      ),
     },
     {
       key: "4",
-      label: <Link href='/'>Xem trang khách</Link>,
+      label: <Link href="/">Xem trang khách</Link>,
     },
     {
       key: "3",
@@ -40,7 +46,7 @@ function HeaderAdmin({ collapsed, setCollapsed }: Props) {
       onClick: () => {
         dispatch(logout());
         router.push("/");
-        clearToken("")
+        clearToken("");
       },
     },
   ];
