@@ -1,9 +1,9 @@
 import  { useState } from 'react'
 
-function useToggle(defaultValue: boolean): [boolean, () => void] {
+function useToggle(defaultValue: boolean): [boolean, (value?: boolean) => void] {
     const [value, setValue] = useState(defaultValue)
-    const toggleValue = (): void => {
-        setValue(!value)
+    const toggleValue = (mode?: boolean): void => {
+        setValue(mode ?? !value)
     }
 
     return [value, toggleValue]

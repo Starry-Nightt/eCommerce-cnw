@@ -1,5 +1,5 @@
 import { hideSpinner, showSpinner } from "@/redux/spinner.slice";
-import http from "@/services/http.service";
+import httpTest, { http } from "@/services/http.service";
 
 const createLoadingInterceptor = (store) => {
   const onRequest = (config) => {
@@ -17,6 +17,8 @@ const createLoadingInterceptor = (store) => {
     return Promise.reject(error);
   };
 
+  httpTest.interceptors.request.use(onRequest);
+  httpTest.interceptors.response.use(onResponse, onError);
   http.interceptors.request.use(onRequest);
   http.interceptors.response.use(onResponse, onError);
 };

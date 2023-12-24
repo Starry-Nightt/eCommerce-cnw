@@ -25,17 +25,68 @@ a {
   display: flex;
 }
 
+.user-setting {
+  flex: 2;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f5f5f5;
+}
+.user-setting ul {
+  list-style: none;
+}
+.user-setting li {
+  padding: 20px 0;
+  cursor: pointer;
+}
+
 .form-user-avatar {
   flex: 3;
   padding: 20px;
   box-sizing: border-box;
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   text-align: center;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
 
 .form-user-info {
   flex: 5;
   padding: 20px;
   box-sizing: border-box;
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
+    rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.max-paragraph-8 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 8; /* number of lines to show */
+  line-clamp: 8;
+  -webkit-box-orient: vertical;
+}
+
+.ant-table-thead .ant-table-cell {
+  background-color: #013362 !important;
+  color: white !important;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1),
+    0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+}
+

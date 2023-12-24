@@ -1,11 +1,14 @@
 import { LocalStorageKey } from "@/constants/local-storage-key.const";
 
 export function getSavedValue(key: LocalStorageKey, initialValue: any) {
-  const savedValue = localStorage.getItem(key);
-  if (savedValue) return JSON.parse(savedValue);
+  if (typeof window !== "undefined") {
+    const savedValue = localStorage.getItem(key);
+    if (savedValue) return JSON.parse(savedValue);
 
-  if (initialValue instanceof Function) return initialValue();
-  return initialValue ?? "";
+    if (initialValue instanceof Function) return initialValue();
+    return initialValue ?? "";
+  }
+  return "";
 }
 
 export function getSortedArrayByKey(data: any[], key: string) {
@@ -52,7 +55,7 @@ export function dateFormatted(value: string) {
   return formattedDate;
 }
 
-export function truncateString(str: String, num: number) {
+export function truncateString(str: String, num: number = 40) {
   if (str.length > num) {
     return str.slice(0, num) + "...";
   } else {

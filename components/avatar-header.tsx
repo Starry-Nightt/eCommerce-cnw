@@ -19,7 +19,7 @@ function AvatarHeader({ items, textWhite, user }: Props) {
             icon={<UserOutlined />}
             style={{ backgroundColor: "#87d068" }}
           />
-          <span className={`font-medium select-none`}>{user?.username}</span>
+          <span className={`font-medium select-none`}>{user?.name}</span>
           <Button size="small" type="text" style={{'color': '#fff'}} className="mt-1" icon={<DownOutlined />} />
         </div>
       </Dropdown>

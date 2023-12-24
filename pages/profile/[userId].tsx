@@ -5,6 +5,7 @@ import { Button, Form, Input, message, Modal } from "antd";
 import { Typography } from "antd";
 import { notification } from "antd";
 import { EditOutlined } from "@ant-design/icons";
+import useAuth from "@/hooks/use-auth";
 
 const { Title } = Typography;
 
@@ -32,6 +33,7 @@ const UserProfile: React.FC = ({ userId }: any) => {
       console.error("Error fetching User", error);
     }
   };
+  const {loggedIn} = useAuth()
 
   useEffect(() => {
     fetchUser();
