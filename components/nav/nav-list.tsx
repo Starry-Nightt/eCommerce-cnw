@@ -10,7 +10,7 @@ interface NavLink {
 interface Props {
   items: NavLink[];
   vertical?: boolean;
-  textWhite?: boolean
+  textWhite?: boolean;
 }
 
 function NavList({ items, textWhite, vertical }: Props) {

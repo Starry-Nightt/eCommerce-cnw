@@ -10,7 +10,7 @@ import { logout } from "@/redux/user.slice";
 import Logo from "@/components/logo";
 import { ROUTE_PATH } from "@/constants/route-path.const";
 import NavList from "@/components/nav/nav-list";
-import { MenuOutlined } from "@ant-design/icons";
+import { MenuOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import useAuthModal from "@/hooks/use-auth-modal";
 import { showLogin } from "@/redux/auth-modal.slice";
 import { useRouter } from "next/router";
@@ -106,6 +106,24 @@ function Header() {
       path: ROUTE_PATH.ORDER,
     },
   ];
+  const navLinksDrawer = [
+    {
+      name: "Trang chủ",
+      path: ROUTE_PATH.HOME
+    },
+    {
+      name: "Tất cả sách",
+      path: ROUTE_PATH.BOOK,
+    },
+    {
+      name: "Xem giỏ hàng",
+      path: ROUTE_PATH.CART,
+    },
+    {
+      name: "Đơn hàng của bạn",
+      path: ROUTE_PATH.ORDER,
+    },
+  ];
   const navLinksAdmin = [
     {
       name: "Trang chủ",
@@ -114,7 +132,7 @@ function Header() {
     {
       name: "Tất cả sách",
       path: ROUTE_PATH.BOOK,
-    }
+    },
   ];
 
   return (
@@ -124,16 +142,28 @@ function Header() {
           <div className="flex items-center gap-10">
             <Logo />
             <div className="hidden md:block">
-              <NavList items={user?.isAdmin ? navLinksAdmin : navLinks} textWhite />
+              <NavList
+                items={user?.isAdmin ? navLinksAdmin : navLinks}
+                textWhite
+              />
             </div>
           </div>
           <div className="hidden md:flex items-center gap-10">
             {loggedIn ? (
-              <AvatarHeader
-                user={user}
-                items={user?.isAdmin ? itemsAdmin : items}
-                textWhite
-              />
+              <div className="flex items-center gap-5">
+                <Button
+                  onClick={() => router.push("/cart")}
+                  icon={<ShoppingCartOutlined />}
+                  type="text"
+                  style={{ color: "#fff", marginTop: "4px" }}
+                  size="large"
+                ></Button>
+                <AvatarHeader
+                  user={user}
+                  items={user?.isAdmin ? itemsAdmin : items}
+                  textWhite
+                />
+              </div>
             ) : (
               <Space direction="horizontal">
                 <Button type="primary" onClick={onShowLogin}>
@@ -161,7 +191,7 @@ function Header() {
         title="Menu"
       >
         <div className="flex flex-col justify-between h-full">
-          <NavList items={navLinks} vertical />
+          <NavList items={navLinksDrawer} vertical />
           <div>
             {loggedIn ? (
               <AvatarHeader

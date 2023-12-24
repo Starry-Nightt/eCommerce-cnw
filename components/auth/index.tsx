@@ -31,7 +31,6 @@ function AuthForm({ register, afterSubmit }: Props) {
       const res = await UserService.login(detail);
       const user: User = [res?.user].map((it) => ({
         ...it,
-        isAdmin: false
       }))[0];
       setToken(res?.token || "");
       dispatch(login(user));

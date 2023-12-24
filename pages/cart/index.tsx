@@ -12,6 +12,8 @@ import {
   message,
 } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
+import Head from "next/head";
+import { useRouter } from "next/router";
 const { Option } = Select;
 
 interface Item {
@@ -37,6 +39,7 @@ const ShoppingCart: React.FC = ({ userId }: any) => {
   const [items, setItems] = useState<Item[]>([]);
   const [user, setUser] = useState<User>();
   const [form] = Form.useForm();
+  const router = useRouter()
 
   useEffect(() => {
     const fetchCarts = async () => {
@@ -86,6 +89,7 @@ const ShoppingCart: React.FC = ({ userId }: any) => {
 
   const handleCheckout = () => {
     // Implement logic for checkout
+    router.push("/buy-result")
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -116,10 +120,13 @@ const ShoppingCart: React.FC = ({ userId }: any) => {
 
   return (
     <div>
+      <Head>
+        <title>Xem giỏ hàng</title>
+      </Head>
       <Card
         title="Giỏ hàng"
         extra={
-          <Button type="primary" size="small" onClick={handleContinueShopping}>
+          <Button type="primary" size="small" onClick={() => router.push("/book")}>
             ← Trở về
           </Button>
         }
