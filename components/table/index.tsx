@@ -72,7 +72,7 @@ function CustomTable({ columns, data, onDeleteAll }: Props) {
   return (
     <div className="shadow-xl overflow-hidden rounded-md relative">
       <Table
-        rowSelection={{
+        rowSelection={onDeleteAll && {
           type: "checkbox",
         }}
         columns={_columns}

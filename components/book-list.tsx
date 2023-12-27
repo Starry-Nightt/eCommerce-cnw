@@ -14,7 +14,7 @@ interface Props {
 function BookList({ books, xs, sm, md, lg }: Props) {
   return (
     <>
-      {books.length ? (
+      {books && books?.length ? (
         <Row
           gutter={[
             { xs: 6, sm: 14, md: 20, lg: 28 },
@@ -23,7 +23,7 @@ function BookList({ books, xs, sm, md, lg }: Props) {
         >
           {books.map((item) => (
             <Col
-              key={item.id}
+              key={item?._id}
               xs={xs ?? 24}
               sm={sm ?? 12}
               md={md ?? 12}

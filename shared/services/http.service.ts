@@ -8,7 +8,7 @@ const httpTest = axios.create({
 });
 
 export const http = axios.create({
-  baseURL: "https://cnweb-backend.onrender.com",
+  baseURL: process.env.API,
   timeout: 6000,
 });
 
