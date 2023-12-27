@@ -45,7 +45,11 @@ function Header() {
     {
       key: "1",
       label: (
-        <Link href={`${user?.isAdmin ? "/admin-profile/1" : "/profile/1"}`}>
+        <Link
+          href={`${
+            user?.isAdmin && loggedIn ? `/admin-profile/${user?.id}` : `/profile/${user?.id}`
+          }`}
+        >
           Thông tin cá nhân
         </Link>
       ),
@@ -68,7 +72,11 @@ function Header() {
     {
       key: "1",
       label: (
-        <Link href={`${user?.isAdmin ? "/admin-profile/1" : "/profile/1"}`}>
+        <Link
+          href={`${
+            user?.isAdmin ? `/admin-profile/${user.id}` : `/profile/${user?.id}`
+          }`}
+        >
           Thông tin cá nhân
         </Link>
       ),
@@ -109,7 +117,7 @@ function Header() {
   const navLinksDrawer = [
     {
       name: "Trang chủ",
-      path: ROUTE_PATH.HOME
+      path: ROUTE_PATH.HOME,
     },
     {
       name: "Tất cả sách",

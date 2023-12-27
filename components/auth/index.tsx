@@ -33,11 +33,18 @@ function AuthForm({ register, afterSubmit }: Props) {
         ...it,
       }))[0];
       setToken(res?.token || "");
-      dispatch(login(user));
-      message.success("Login success !");
-      afterSubmit?.();
-      if (user?.isAdmin) {
-        router.push("/test");
+      if (Object.keys(user).length ) {
+        dispatch(login(user));
+        message.success("Login success !");
+        afterSubmit?.();
+        if (user?.isAdmin) {
+          router.push("/dashboard");
+        }
+      } else {
+        notification.error({
+          message: 'Tài khoản hoặc mật khẩu ko đúng',
+          placement: "topLeft",
+        });
       }
     } catch (err) {
       notification.error({

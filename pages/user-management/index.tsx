@@ -4,15 +4,17 @@ import UserService from "@/services/user.service";
 import { Button, Popconfirm, Space, Tag, Typography, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { GetServerSideProps } from "next";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { User } from "@/models/user.model";
 import { useEffect, useState } from "react";
 import TableSearch from "@/components/table/table-search";
 import { SearchProps } from "antd/es/input";
+import { useRouter } from "next/router";
 
 const Index = ({ users }) => {
-  const [data, setData] = useState<any[]>(users);
+  const [data, setData] = useState<User[]>(users);
   const [key, setKey] = useState("");
+  const router = useRouter()
 
   useEffect(() => {
     if (key.trim().length) {
@@ -74,9 +76,11 @@ const Index = ({ users }) => {
     },
     {
       title: "Tác vụ",
+      dataIndex: "_id",
       key: "action",
-      render: (_, record) => (
+      render: (_id, record) => (
         <Space size="middle">
+          <Button icon={<EyeOutlined />} onClick={() => router.push("/admin-profile/" + _id)}></Button>
           <Popconfirm
             title="Xóa người dùng"
             description="Bạn có chắc chắn muốn xóa người dùng này?"
@@ -88,17 +92,12 @@ const Index = ({ users }) => {
             okText="Xác nhận"
             cancelText="Hủy"
           >
-            <Button danger shape="round" icon={<DeleteOutlined />} />
+            <Button danger icon={<DeleteOutlined />} />
           </Popconfirm>
         </Space>
       ),
     },
   ];
-
-  const onDeleteAll = () => {
-    setData([]);
-  };
-
   const onSearch: SearchProps["onSearch"] = (value) => setKey(value);
 
   return (
@@ -106,7 +105,7 @@ const Index = ({ users }) => {
       <div className="flex justify-end">
         <TableSearch className="mb-4 ml-auto" onSearch={onSearch} />
       </div>
-      <CustomTable data={data} columns={columns} onDeleteAll={onDeleteAll} />
+      <CustomTable data={data} columns={columns}  />
     </>
   );
 };

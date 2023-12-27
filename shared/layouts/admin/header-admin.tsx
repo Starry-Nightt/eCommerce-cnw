@@ -25,7 +25,7 @@ function HeaderAdmin({ collapsed, setCollapsed }: Props) {
     {
       key: "1",
       label: (
-        <Link href={`${user?.isAdmin ? "/admin-profile/1" : "/profile/1"}`}>
+        <Link href={`${user?.isAdmin && loggedIn ? `/admin-profile/${user?.id}` : `/profile/${user?.id}`}`}>
           Thông tin cá nhân
         </Link>
       ),
