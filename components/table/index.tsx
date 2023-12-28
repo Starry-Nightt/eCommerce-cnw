@@ -45,8 +45,8 @@ function CustomTable({ columns, data, onDeleteAll }: Props) {
             className="flex-1 w-1/4"
           ></Skeleton.Input>
         </div>
-        {new Array(8).fill(10).map((it) => (
-          <div className="my-4">
+        {new Array(8).fill(10).map((it, idx) => (
+          <div className="my-4" key={idx}>
             <Skeleton.Input active block></Skeleton.Input>
           </div>
         ))}

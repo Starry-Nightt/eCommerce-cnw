@@ -49,7 +49,7 @@ function BookListItem({ book }: Props) {
           className="cursor-pointer"
         />
       }
-      actions={!(user && user?.isAdmin) && [<ShoppingCartOutlined />]}
+      actions={!(user && user?.isAdmin) && [<ShoppingCartOutlined key={Math.floor(Math.random() * 1000000)} />]}
     >
       <Meta title={book.name} description={description} />
     </Card>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { getCartByUserId } from "@/services/cart.services";
-import { getUserById } from "@/services/user.services";
 import {
   Button,
   Form,
@@ -14,6 +13,9 @@ import {
 import { DeleteOutlined } from "@ant-design/icons";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import UserService from "@/services/user.service";
+import { User } from "@/models/user.model";
+import useAuth from "@/hooks/use-auth";
 const { Option } = Select;
 
 interface Item {
@@ -25,21 +27,15 @@ interface Item {
   color: string;
 }
 
-interface User {
-  id: number;
-  name: string;
-  age: number;
-  address: string;
-  phone: string;
-  email: string;
-  avatar: string;
-}
-
-const ShoppingCart: React.FC = ({ userId }: any) => {
+const ShoppingCart: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [user, setUser] = useState<User>();
   const [form] = Form.useForm();
-  const router = useRouter()
+  const router = useRouter();
+  const { user: userInfo } = useAuth();
+  const [userId, setUserId] = useState<string>(
+    (userInfo?.id as string) ?? "656c7f06657dab52d0053101"
+  );
 
   useEffect(() => {
     const fetchCarts = async () => {
@@ -56,7 +52,7 @@ const ShoppingCart: React.FC = ({ userId }: any) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userData = await getUserById("656c7f06657dab52d0053101");
+        const userData = await UserService.getUser(userId);
         setUser(userData);
 
         // Use the userData to set the form fields
@@ -64,7 +60,6 @@ const ShoppingCart: React.FC = ({ userId }: any) => {
           id: userData.id,
           name: userData.name,
           phone: userData.phone,
-          address: userData.address,
           email: userData.email,
         });
       } catch (error) {
@@ -89,7 +84,7 @@ const ShoppingCart: React.FC = ({ userId }: any) => {
 
   const handleCheckout = () => {
     // Implement logic for checkout
-    router.push("/buy-result")
+    router.push("/buy-result");
   };
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -126,7 +121,11 @@ const ShoppingCart: React.FC = ({ userId }: any) => {
       <Card
         title="Giỏ hàng"
         extra={
-          <Button type="primary" size="small" onClick={() => router.push("/book")}>
+          <Button
+            type="primary"
+            size="small"
+            onClick={() => router.push("/book")}
+          >
             ← Trở về
           </Button>
         }

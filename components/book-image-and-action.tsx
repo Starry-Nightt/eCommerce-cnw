@@ -12,18 +12,6 @@ interface Props {
 }
 
 function BookImageAndAction({ book }: Props) {
-  if (!book)
-    return (
-      <Space className="w-full xl:px-12" direction="vertical" size="large">
-        <div className="w-full flex justify-center mb-5">
-          <Skeleton.Image active style={{ height: "300px", width: "300px" }} />
-        </div>
-
-        <Skeleton.Button active block />
-        <Skeleton.Button active block />
-      </Space>
-    );
-
   const { message } = App.useApp();
 
   const { loggedIn, user } = useAuth();
@@ -46,6 +34,18 @@ function BookImageAndAction({ book }: Props) {
     else setValue(value);
   };
 
+  if (!book)
+    return (
+      <Space className="w-full xl:px-12" direction="vertical" size="large">
+        <div className="w-full flex justify-center mb-5">
+          <Skeleton.Image active style={{ height: "300px", width: "300px" }} />
+        </div>
+
+        <Skeleton.Button active block />
+        <Skeleton.Button active block />
+      </Space>
+    );
+
   return (
     <Space
       direction="vertical"
@@ -53,9 +53,7 @@ function BookImageAndAction({ book }: Props) {
       size="large"
     >
       <div className="w-full flex justify-center mb-5">
-        <Image
-          src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-        />
+        <Image src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
       </div>
       {!(user && user?.isAdmin) && (
         <div className="flex flex-col gap-5">
