@@ -30,7 +30,7 @@ function BookListItem({ book }: Props) {
       <div className="mb-2">{truncateString(book.describe)}</div>
       <div className="flex justify-between mb-3 items-center">
         <div className="text-cyan-600 font-medium">
-          Giá: {vndCurrencyFormat(book.price)}
+          Giá: {vndCurrencyFormat(book.price * 1000)}
         </div>
         <div className=" text-neutral-800 text-xs">Đã bán: {book.sales}</div>
       </div>
@@ -44,7 +44,7 @@ function BookListItem({ book }: Props) {
       cover={
         <img
           alt="book-image"
-          src={'/static/images/book-image-default.png'}
+          src={book.img ?? '/static/images/book-image-default.png'}
           onClick={onViewDetail}
           className="cursor-pointer"
         />

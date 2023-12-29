@@ -9,9 +9,10 @@ interface Props {
   className?: string;
   onSearchKey?: (key: string) => void;
   value?: string;
+  onChange?: any
 }
 
-function SearchBox({ className, onSearchKey, value }: Props) {
+function SearchBox({ className, onSearchKey, value, onChange }: Props) {
   const onSearch: SearchProps["onSearch"] = (value, _e, info) => {
     onSearchKey(value);
   };
@@ -23,6 +24,7 @@ function SearchBox({ className, onSearchKey, value }: Props) {
       enterButton
       className={className}
       value={value}
+      onChange={onChange}
       onSearch={onSearch}
     />
   );

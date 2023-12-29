@@ -15,7 +15,7 @@ class AppBookService {
   };
 
   getAllCategories = (): Promise<Category[]> => {
-    return httpTest.get("/categories");
+    return http.get("/category").then((res) => res.data);
   };
 
   getBookByCategory = (categoryId: String): Promise<Book[]> => {

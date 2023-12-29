@@ -7,7 +7,7 @@ export class Book {
   categoryId: string;
   name: string;
   price: number;
-  image: string;
+  img: string;
   publisherId: string;
   authorId: string;
 }
