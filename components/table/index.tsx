@@ -69,6 +69,11 @@ function CustomTable({ columns, data, onDeleteAll }: Props) {
     ,
     ...columns,
   ];
+
+  const paginationOptions = {
+    pageSize: 5
+  };
+
   return (
     <div className="shadow-xl overflow-hidden rounded-md relative">
       <Table
@@ -77,6 +82,7 @@ function CustomTable({ columns, data, onDeleteAll }: Props) {
         }}
         columns={_columns}
         dataSource={_data}
+        pagination={paginationOptions}
       />
       {onDeleteAll && (
         <div className="absolute bottom-4 left-2">

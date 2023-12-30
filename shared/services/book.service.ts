@@ -1,4 +1,4 @@
-import { Book, BookDetailInfo } from "@/models/book.model";
+import { Book, BookDetailInfo, BookUpdateInfo } from "@/models/book.model";
 import httpTest, { http } from "./http.service";
 import { Category } from "@/models/category.model";
 
@@ -40,6 +40,14 @@ class AppBookService {
 
   deleteBook = (bookId: String): Promise<any> => {
     return http.delete(`/admin/deletebook/${bookId}`);
+  };
+
+  createBook = (bookDetail: BookUpdateInfo) => {
+    return http.post("/admin/addbook", bookDetail);
+  };
+
+  updateBook = (id: string, bookDetail: BookUpdateInfo) => {
+    return http.put(`/admin/addbook/${id}`, bookDetail);
   };
 }
 

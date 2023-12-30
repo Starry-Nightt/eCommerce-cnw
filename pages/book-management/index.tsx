@@ -5,13 +5,12 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import type { ColumnsType } from "antd/es/table";
-import Image from "next/image";
-import { Button, Popconfirm, Space, Typography, message } from "antd";
-import { EyeOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Button, Image, Popconfirm, Space, Typography, message } from "antd";
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import TableSearch from "@/components/table/table-search";
 import CustomTable from "@/components/table";
 import { SearchProps } from "antd/es/input";
-
+import { truncateString, vndCurrencyFormat } from "@/utils/helper";
 
 const Index = ({ books }) => {
   const [data, setData] = useState<Book[]>(books);
@@ -45,29 +44,22 @@ const Index = ({ books }) => {
     {
       title: "Hình ảnh",
       dataIndex: "img",
-      render: (src) => (
-        <Image
-          src={
-            "https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-          }
-          alt=""
-          width={100}
-          height={100}
-        />
-      ),
+      render: (src) => <Image src={src} alt="" width={100} height={100} />,
     },
     {
       title: "Mô tả",
       dataIndex: "describe",
-      render: (desc) => <span className="capitalize">{desc}</span>,
+      render: (desc) => (
+        <div className="max-w-xs">{truncateString(desc, 120)}</div>
+      ),
     },
     {
       title: "Giá",
       dataIndex: "price",
       render: (price) =>
         price && (
-          <Typography.Text copyable className="tracking-wide text-base">
-            {price}
+          <Typography.Text className="font-semibold text-sm">
+            {vndCurrencyFormat(price * 1000)}
           </Typography.Text>
         ),
     },
@@ -77,7 +69,7 @@ const Index = ({ books }) => {
       dataIndex: "sales",
       render: (sales) =>
         sales && (
-          <Typography.Text copyable className="tracking-wide text-base">
+          <Typography.Text className="tracking-wide text-base">
             {sales}
           </Typography.Text>
         ),
@@ -89,8 +81,8 @@ const Index = ({ books }) => {
       render: (_id, record) => (
         <Space size="middle">
           <Button
-            icon={<EyeOutlined />}
-            onClick={() => router.push("/admin-profile/" + _id)}
+            icon={<EditOutlined />}
+            onClick={() => router.push("/book-management/" + _id)}
           ></Button>
           <Popconfirm
             title="Xóa người dùng"
@@ -114,8 +106,9 @@ const Index = ({ books }) => {
 
   return (
     <>
-      <div className="flex justify-end">
-        <TableSearch className="mb-4 ml-auto" onSearch={onSearch} />
+      <div className="flex justify-between">
+        <TableSearch className="mb-4" onSearch={onSearch} />
+        <Button type="primary" onClick={() => router.push("/book-management/create")}>Thêm mới sách</Button>
       </div>
       <CustomTable data={data} columns={columns} />
     </>
