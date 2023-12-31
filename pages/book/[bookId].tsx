@@ -36,7 +36,7 @@ function BookDetailPage({ book, comments }) {
               <Divider>
                 <span className="text-lg">Đánh giá người dùng</span>
               </Divider>
-              <BookComments comments={comments} />
+              <BookComments comments={comments} bookId={book?.id ?? book?._id} />
             </>
           </Col>
         </Row>
@@ -59,7 +59,6 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   const { bookId } = params;
   const data = await BookService.getBookById(bookId as string);
   const comments = await BookService.getCommentsOfBook(bookId as string);
-
   return {
     props: {
       book: data,

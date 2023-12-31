@@ -1,33 +1,18 @@
 import { Book, BookDetailInfo, BookUpdateInfo } from "@/models/book.model";
 import httpTest, { http } from "./http.service";
 import { Category } from "@/models/category.model";
+import { Comment, CommentDetail } from "@/models/comment.model";
 
 class AppBookService {
   getAllBook = (queryString?: string): Promise<any> => {
     if (queryString && queryString.length > 0) {
-      return http.get(`/book/allbook?${queryString}`).catch(() => {
-        return httpTest.get(`/books?${queryString}`);
-      });
+      return http.get(`/book/allbook?${queryString}`);
     }
-    return http.get("/book/allbook").catch(() => {
-      return httpTest.get(`/books`);
-    });
+    return http.get("/book/allbook");
   };
 
   getAllCategories = (): Promise<Category[]> => {
     return http.get("/category").then((res) => res.data);
-  };
-
-  getBookByCategory = (categoryId: String): Promise<Book[]> => {
-    return httpTest.get(`/books/category/${categoryId}`);
-  };
-
-  getBookByAuthor = (authorId: String): Promise<Book[]> => {
-    return httpTest.get(`/books/author/${authorId}`);
-  };
-
-  getBookByPublisher = (publisherId: String): Promise<Book[]> => {
-    return httpTest.get(`/books/publisher/${publisherId}`);
   };
 
   getBookById = (bookId: String): Promise<BookDetailInfo> => {
@@ -48,6 +33,21 @@ class AppBookService {
 
   updateBook = (id: string, bookDetail: BookUpdateInfo) => {
     return http.put(`/admin/addbook/${id}`, bookDetail);
+  };
+
+  getCommentOfBook = (bookId: string) => {
+    return httpTest.get(`/comments/${bookId}`);
+  };
+
+  createCommentBook = (
+    bookId: string,
+    detail: CommentDetail
+  ): Promise<Comment> => {
+    return httpTest.post(`/comments/${bookId}`, detail);
+  };
+
+  getRatingOfBook = (bookId: string): Promise<number> => {
+    return httpTest.get(`/rating/${bookId}`);
   };
 }
 

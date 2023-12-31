@@ -1,16 +1,17 @@
-import { Comment } from "@/models/comment.model";
+import { Comment, CommentDetail } from "@/models/comment.model";
 import { Avatar, Button, List, Rate, Skeleton, Typography } from "antd";
 import axios from "axios";
 import React, { memo, useEffect, useMemo, useState } from "react";
 import useAuth from "@/hooks/use-auth";
 import BookUserComment from "./book-user-comment";
+import BookService from "@/services/book.service";
 
 interface Props {
   comments: Comment[];
+  bookId: string;
 }
 
-function BookComments({ comments }: Props) {
-  const [avatarArr, setAvatarArr] = useState([]);
+function BookComments({ comments, bookId }: Props) {
   const [loading, setLoading] = useState(false);
   const [commentList, setCommentList] = useState(comments ?? []);
   const { user, loggedIn } = useAuth();
@@ -21,27 +22,15 @@ function BookComments({ comments }: Props) {
         : null,
     [commentList]
   );
-  const onAddComment = (comment: Comment) => {
-    setCommentList((prev) => [comment, ...prev]);
+  const onAddComment = async (comment: CommentDetail) => {
+    await BookService.createCommentBook(bookId, comment).then((res) => {
+      setCommentList((prev) => [res, ...prev]);
+    });
   };
-  useEffect(() => {
-    setLoading(true);
-    const fakeDataUrl = `https://randomuser.me/api/?results=${
-      comments?.length ?? 100
-    }&inc=picture`;
-    axios
-      .get(fakeDataUrl)
-      .then((res) => {
-        setAvatarArr(res.data?.results);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [commentList]);
 
   useEffect(() => {
-    setCommentList(comments)
-  }, [comments])
+    setCommentList(comments);
+  }, [comments]);
 
   if (!commentList || loading) {
     const items = new Array(4).fill(0);
@@ -60,20 +49,30 @@ function BookComments({ comments }: Props) {
 
   return (
     <div>
-      {!userComment && <BookUserComment onAddComment={onAddComment} />}
+      {!userComment && !user?.isAdmin && (
+        <BookUserComment onAddComment={onAddComment} />
+      )}
 
-      <List
+      {commentList && !!commentList.length && <List
         itemLayout="horizontal"
         dataSource={commentList}
         renderItem={(item, idx) => (
           <List.Item>
             <List.Item.Meta
-              avatar={<Avatar src={avatarArr[idx]?.picture?.large} />}
+              avatar={
+                <Avatar
+                  src={user?.avatar ?? "/static/images/avatar-default.jpg"}
+                />
+              }
               title={
                 <div className="flex gap-3 items-center">
-                  <span>{loggedIn && item.userId === user?.id ? "BẠN" : item.email}</span>
+                  <span>
+                    {loggedIn && item.userId === user?.id ? "BẠN" : item.name}
+                  </span>
                   <Rate
-                    value={Math.floor(1 + Math.random() * 5)}
+                    value={
+                      item.score
+                    }
                     disabled
                   ></Rate>
                 </div>
@@ -82,7 +81,7 @@ function BookComments({ comments }: Props) {
             />
           </List.Item>
         )}
-      />
+      />}
     </div>
   );
 }
