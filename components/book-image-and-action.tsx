@@ -12,18 +12,6 @@ interface Props {
 }
 
 function BookImageAndAction({ book }: Props) {
-  if (!book)
-    return (
-      <Space className="w-full xl:px-12" direction="vertical" size="large">
-        <div className="w-full flex justify-center mb-5">
-          <Skeleton.Image active style={{ height: "300px", width: "300px" }} />
-        </div>
-
-        <Skeleton.Button active block />
-        <Skeleton.Button active block />
-      </Space>
-    );
-
   const { message } = App.useApp();
 
   const { loggedIn, user } = useAuth();
@@ -46,6 +34,18 @@ function BookImageAndAction({ book }: Props) {
     else setValue(value);
   };
 
+  if (!book)
+    return (
+      <Space className="w-full xl:px-12" direction="vertical" size="large">
+        <div className="w-full flex justify-center mb-5">
+          <Skeleton.Image active style={{ height: "300px", width: "300px" }} />
+        </div>
+
+        <Skeleton.Button active block />
+        <Skeleton.Button active block />
+      </Space>
+    );
+
   return (
     <Space
       direction="vertical"
@@ -54,7 +54,11 @@ function BookImageAndAction({ book }: Props) {
     >
       <div className="w-full flex justify-center mb-5">
         <Image
-          src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+          src={book.img}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null;
+            currentTarget.src = "/static/images/book-image-default.png";
+          }}
         />
       </div>
       {!(user && user?.isAdmin) && (
@@ -76,7 +80,7 @@ function BookImageAndAction({ book }: Props) {
             icon={<ShoppingCartOutlined />}
             onClick={onBuy}
           >
-            Mua ngay {vndCurrencyFormat(book?.price)}
+            Mua ngay {vndCurrencyFormat(book?.price * 1000)}
           </Button>
           <div className="flex justify-center flex-col items-center">
             <Rate tooltips={desc} onChange={onRating} value={value} />

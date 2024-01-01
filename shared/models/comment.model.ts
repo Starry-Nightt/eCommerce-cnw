@@ -1,7 +1,15 @@
 export class Comment {
   id: string;
-  email: string;
-  body: string;
-  score?: number;
   userId: string;
+  bookId: string;
+  name: string;
+  body: string;
+  score: number;
+}
+
+export interface CommentDetail {
+  userId: string;
+  name: string;
+  body: string;
+  score: number;
 }

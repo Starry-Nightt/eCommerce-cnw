@@ -1,4 +1,5 @@
 import { LocalStorageKey } from "@/constants/local-storage-key.const";
+import { BillStatus } from "@/models/bill.model";
 
 export function getSavedValue(key: LocalStorageKey, initialValue: any) {
   if (typeof window !== "undefined") {
@@ -61,4 +62,46 @@ export function truncateString(str: String, num: number = 40) {
   } else {
     return str;
   }
+}
+
+export const getRecentDates = (): string[] => {
+  const today = new Date();
+  const recentDates: string[] = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today);
+    date.setDate(today.getDate() - i);
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const year = date.getFullYear();
+
+    const formattedDate = `${day}-${month}-${year}`;
+    recentDates.push(formattedDate);
+  }
+
+  return recentDates;
+};
+
+export const getCurrentYear = (): number => {
+  const currentYear = new Date().getFullYear();
+  return currentYear;
+};
+
+export const getLabelBillStatus = (status: BillStatus): string => {
+  return status === BillStatus.CHECK
+    ? "Đã xác thực"
+    : status === BillStatus.UNCHECK
+    ? "Chưa xác thực"
+    : "Đang vận chuyển";
+};
+
+export function convertDateFormat(isoDateString: string): string {
+  const date = new Date(isoDateString);
+
+  const day = date.getUTCDate().toString().padStart(2, "0");
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0"); // Tháng bắt đầu từ 0
+  const year = date.getUTCFullYear();
+
+  return `${day}-${month}-${year}`;
 }

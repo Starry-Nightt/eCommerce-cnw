@@ -45,8 +45,8 @@ function CustomTable({ columns, data, onDeleteAll }: Props) {
             className="flex-1 w-1/4"
           ></Skeleton.Input>
         </div>
-        {new Array(8).fill(10).map((it) => (
-          <div className="my-4">
+        {new Array(8).fill(10).map((it, idx) => (
+          <div className="my-4" key={idx}>
             <Skeleton.Input active block></Skeleton.Input>
           </div>
         ))}
@@ -69,6 +69,11 @@ function CustomTable({ columns, data, onDeleteAll }: Props) {
     ,
     ...columns,
   ];
+
+  const paginationOptions = {
+    pageSize: 5
+  };
+
   return (
     <div className="shadow-xl overflow-hidden rounded-md relative">
       <Table
@@ -77,6 +82,7 @@ function CustomTable({ columns, data, onDeleteAll }: Props) {
         }}
         columns={_columns}
         dataSource={_data}
+        pagination={paginationOptions}
       />
       {onDeleteAll && (
         <div className="absolute bottom-4 left-2">

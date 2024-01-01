@@ -19,6 +19,7 @@ const FormRules = {
       message: "Số điện thoại không hợp lệ",
     },
   ],
+  required: [{ required: true, message: "Vui lòng nhập thông tin trường này" }],
 };
 
 export default FormRules;

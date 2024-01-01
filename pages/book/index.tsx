@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import SearchBox from "@/components/search-box";
 
 interface Props {
-  books: {data: Book[]};
+  books: { data: Book[] };
   categories: Category[];
   authors: Author[];
   publishers: Publisher[];
@@ -60,8 +60,8 @@ const Index = ({
 
     const _q = queryStringPage
       .split("&")
-      ?.find((it) => it.startsWith("q"))
-      ?.slice(2);
+      ?.find((it) => it.startsWith("searchtext"))
+      ?.slice(11);
     setQ(_q ?? "");
     setSelectedAuthor(_selectedAuthor);
     setSelectedPublishers(_selectedPublishers);
@@ -71,21 +71,19 @@ const Index = ({
   useEffect(() => {
     const params = new URLSearchParams();
     selectedAuthor.forEach((item) => params.append("author", item.slug));
-    selectedCategories.forEach((item) =>
-      params.append("categories", item.slug)
-    );
-    selectedPublishers.forEach((item) =>
-      params.append("publishers", item.slug)
-    );
-    if (q.length){
-      params.append("q", q);
+    selectedCategories.forEach((item) => params.append("category", item.slug));
+    selectedPublishers.forEach((item) => params.append("nsx", item.slug));
+    if (q.length) {
+      params.append("searchtext", q);
     }
     const queryString = params.toString();
     setQuery(queryString);
   }, [selectedAuthor, selectedCategories, selectedPublishers, q]);
 
   useEffect(() => {
-    router.push(query.length ?`/book?${query}` : 'book', undefined, { shallow: true });
+    router.push(query.length ? `/book?${query}` : "book", undefined, {
+      shallow: true,
+    });
     fetchData(query);
   }, [query]);
 
@@ -104,7 +102,10 @@ const Index = ({
         <title>Tìm kiếm sách</title>
       </Head>
       <div className="ml-auto w-full md:w-64">
-        <SearchBox className=" mb-6" onSearchKey={onSearch} value={q} />
+        <SearchBox
+          className=" mb-6"
+          onSearchKey={onSearch}
+        />
       </div>
       <Row
         gutter={[
@@ -173,15 +174,30 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   });
   const queryString = params.toString();
   const books = await BookService.getAllBook(queryString);
-  const categories = await BookService.getAllCategories();
-  const authors = await AuthorService.getAllAuthors();
-  const publishers = await PublisherService.getAllPublishers();
+  const categories = (await BookService.getAllCategories()) || [];
+  const categoriesData = categories?.map((it) => ({
+    ...it,
+    id: it?._id,
+    slug: it.name,
+  }));
+  const authors = (await AuthorService.getAllAuthors()) || [];
+  const authorData = authors?.map((it) => ({
+    ...it,
+    id: it?._id,
+    slug: it.name,
+  }));
+  const publishers = (await PublisherService.getAllPublishers()) || [];
+  const publisherData = publishers?.map((it) => ({
+    ...it,
+    id: it?._id,
+    slug: it.name,
+  }));
   return {
     props: {
       books: books,
-      categories,
-      authors,
-      publishers,
+      categories: categoriesData,
+      authors: authorData,
+      publishers: publisherData,
       queryStringPage: queryString,
     },
   };

@@ -5,11 +5,11 @@ import { UserOutlined, DownOutlined } from "@ant-design/icons";
 const { TextArea } = Input;
 
 import React, { useState } from "react";
-import { Comment } from "@/models/comment.model";
+import { Comment, CommentDetail } from "@/models/comment.model";
 import AvatarHeader from "./avatar-header";
 
 interface Props {
-  onAddComment: (comment: Comment) => void;
+  onAddComment: (comment: CommentDetail) => void;
 }
 
 function BookUserComment({ onAddComment }: Props) {
@@ -18,12 +18,11 @@ function BookUserComment({ onAddComment }: Props) {
   const [rate, setRate] = useState(null);
 
   const onComment = () => {
-    const newComment: Comment = {
-      id: `${Math.floor(Math.random() * 10000)}`,
-      email: user.email,
+    const newComment: CommentDetail = {
       body: comment,
       score: rate,
       userId: user.id,
+      name: user.name,
     };
     onAddComment(newComment);
   };

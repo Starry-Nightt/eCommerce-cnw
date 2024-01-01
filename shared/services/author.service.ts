@@ -1,9 +1,9 @@
 import { Author } from "@/models/author.model";
-import httpTest from "./http.service";
+import httpTest, { http } from "./http.service";
 
 class AppAuthorService {
   getAllAuthors = (): Promise<Author[]> => {
-    return httpTest.get("/authors");
+    return http.get("/author").then((res) => res.data);
   };
 }
 

@@ -1,9 +1,9 @@
-import httpTest from "./http.service";
+import httpTest, { http } from "./http.service";
 import { Publisher } from "@/models/publisher.model";
 
 class AppPublisherService {
   getAllPublishers = (): Promise<Publisher[]> => {
-    return httpTest.get("/publishers");
+    return http.get("/nsx").then((res) => res.data);
   };
 }
 
