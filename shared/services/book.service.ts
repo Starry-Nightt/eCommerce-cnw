@@ -24,7 +24,7 @@ class AppBookService {
   };
 
   deleteBook = (bookId: String): Promise<any> => {
-    return http.get(`/admin/deletebook/${bookId}`);
+    return http.delete(`/admin/deletebook/${bookId}`);
   };
 
   createBook = (bookDetail: BookUpdateInfo) => {
