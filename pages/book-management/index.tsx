@@ -52,7 +52,7 @@ const Index = ({ books }) => {
           height={100}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null;
-            currentTarget.src = "/static/images/book-image-default.png";
+            currentTarget.src = "/static/images/no-image.jpg";
           }}
         />
       ),

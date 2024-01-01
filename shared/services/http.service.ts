@@ -3,12 +3,17 @@ import { getSavedValue } from "@/utils/helper";
 import axios from "axios";
 
 const httpTest = axios.create({
-  baseURL: process.env.PUBLIC_API_NEXT ? process.env.PUBLIC_API_NEXT : "/api",
+  baseURL: process.env.NEXT_PUBLIC_LOCAL_API_URL,
   timeout: 6000,
 });
 
+console.log(
+  process.env.NEXT_PUBLIC_LOCAL_API_URL,
+  process.env.NEXT_PUBLIC_RENDER_API_URL
+);
+
 export const http = axios.create({
-  baseURL: process.env.API,
+  baseURL: process.env.NEXT_PUBLIC_RENDER_API_URL,
   timeout: 6000,
 });
 
