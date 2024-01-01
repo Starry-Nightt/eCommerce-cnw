@@ -49,7 +49,7 @@ function BookListItem({ book }: Props) {
           className="cursor-pointer"
           onError={({ currentTarget }) => {
             currentTarget.onerror = null; 
-            currentTarget.src='/static/images/book-image-default.png';
+            currentTarget.src='/static/images/no-image.jpg';
           }}
         />
       }

@@ -57,7 +57,7 @@ function BookImageAndAction({ book }: Props) {
           src={book.img}
           onError={({ currentTarget }) => {
             currentTarget.onerror = null;
-            currentTarget.src = "/static/images/book-image-default.png";
+            currentTarget.src = "/static/images/no-image.jpg";
           }}
         />
       </div>
