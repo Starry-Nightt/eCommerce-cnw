@@ -3,7 +3,7 @@ import { getSavedValue } from "@/utils/helper";
 import axios from "axios";
 
 const httpTest = axios.create({
-  baseURL: process.env.PUBLIC_API_NEXT,
+  baseURL: process.env.PUBLIC_API_NEXT ? process.env.PUBLIC_API_NEXT : "/api",
   timeout: 6000,
 });
 
