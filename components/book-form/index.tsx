@@ -55,7 +55,7 @@ function BookForm({ isEdit, data }: Props) {
 
     getCategories();
     getAuthors();
-    // getPublishers();
+    getPublishers();
   }, []);
 
   useEffect(() => {
@@ -63,21 +63,21 @@ function BookForm({ isEdit, data }: Props) {
       const input = {
         id_author: authors.find((it) => it.name == data.author)?._id,
         id_category: categories.find((it) => it.name == data.category)?._id,
-        id_nsx: "1",
+        id_nsx: publishers.find(it => it.name === data.nsx)?._id,
         name: data.name,
         price: data.price,
         describe: data.describe,
-        release_date: moment(data.release_date)
+        release_date: moment(data.release_date),
       };
       form.setFieldsValue(input);
       setUrl(data.img);
       setSelectedDate(moment(data.release_date));
     }
-  }, []);
+  }, [authors, categories, publishers]);
 
   const onFinish = (values: any) => {
     if (!isEdit) {
-      const detail = { ...values, urlImage: url, release_date: selectedDate };
+      const detail = { ...values, urlImg: url, release_date: selectedDate, price: String(values.price) };
       BookService.createBook(detail)
         .then(() => {
           message.success("Thêm mới sách thành công");
@@ -86,7 +86,8 @@ function BookForm({ isEdit, data }: Props) {
           message.error("Đã có lỗi xảy ra. Xin vui lòng thử lại");
         });
     } else {
-      const detail = { ...values, urlImage: url };
+      const {id_author, id_nsx, ...payload} = values
+      const detail = { ...payload, urlImg: url };
       BookService.updateBook(data.id, detail)
         .then(() => {
           message.success("Cập nhật sách thành công");
@@ -135,8 +136,11 @@ function BookForm({ isEdit, data }: Props) {
               label="Nhà sản xuất"
             >
               <Select placeholder="Chọn nhà sản xuất" disabled={isEdit}>
-                <Option value="Zhejiang">Zhejiang</Option>
-                <Option value="Jiangsu">Jiangsu</Option>
+                {publishers.map((it) => (
+                  <Option key={it?._id} value={it?._id}>
+                    {it.name}
+                  </Option>
+                ))}
               </Select>
             </Form.Item>
           </Col>
@@ -170,7 +174,12 @@ function BookForm({ isEdit, data }: Props) {
               name="release_date"
               label="Ngày sản xuất"
             >
-              <DatePicker onChange={handleDateChange} disabled={isEdit} format="YYYY-MM-DD" />
+              <DatePicker
+                onChange={handleDateChange}
+                disabled={isEdit}
+                format="YYYY-MM-DD"
+                placeholder="Chọn ngày"
+              />
             </Form.Item>
           </Col>
         </Row>

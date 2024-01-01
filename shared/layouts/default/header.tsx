@@ -47,7 +47,9 @@ function Header() {
       label: (
         <Link
           href={`${
-            user?.isAdmin && loggedIn ? `/admin-profile/${user?.id}` : `/profile/${user?.id}`
+            user?.isAdmin && loggedIn
+              ? `/admin-profile/${user?.id}`
+              : `/profile/${user?.id}`
           }`}
         >
           Thông tin cá nhân
@@ -83,11 +85,19 @@ function Header() {
     },
     {
       key: "2",
-      label: <Link href="/test">Đổi mật khẩu</Link>,
+      label: (
+        <Link
+          href={`${
+            user?.isAdmin ? `/admin-profile/${user.id}` : `/profile/${user?.id}`
+          }`}
+        >
+          Đổi mật khẩu
+        </Link>
+      ),
     },
     {
       key: "admin-1",
-      label: <Link href="/user-management">Quay về trang admin</Link>,
+      label: <Link href="/dashboard">Quay về trang admin</Link>,
     },
     {
       key: "3",
@@ -159,13 +169,15 @@ function Header() {
           <div className="hidden md:flex items-center gap-10">
             {loggedIn ? (
               <div className="flex items-center gap-5">
-                <Button
-                  onClick={() => router.push("/cart")}
-                  icon={<ShoppingCartOutlined />}
-                  type="text"
-                  style={{ color: "#fff", marginTop: "4px" }}
-                  size="large"
-                ></Button>
+                {!user.isAdmin && (
+                  <Button
+                    onClick={() => router.push("/cart")}
+                    icon={<ShoppingCartOutlined />}
+                    type="text"
+                    style={{ color: "#fff", marginTop: "4px" }}
+                    size="large"
+                  ></Button>
+                )}
                 <AvatarHeader
                   user={user}
                   items={user?.isAdmin ? itemsAdmin : items}

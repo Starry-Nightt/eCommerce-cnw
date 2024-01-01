@@ -47,6 +47,10 @@ function BookListItem({ book }: Props) {
           src={book.img ?? '/static/images/book-image-default.png'}
           onClick={onViewDetail}
           className="cursor-pointer"
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; 
+            currentTarget.src='/static/images/book-image-default.png';
+          }}
         />
       }
       actions={!(user && user?.isAdmin) && [<ShoppingCartOutlined key={Math.floor(Math.random() * 1000000)} />]}

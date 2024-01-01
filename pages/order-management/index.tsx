@@ -140,7 +140,12 @@ const Index = ({ bills }: Props) => {
       if (it._id === billId) return { ...it, issend: status };
       else return it;
     });
+    const _originalData = originalData.map((it) => {
+      if (it._id === billId) return { ...it, issend: status };
+      else return it;
+    });
     setData(_data);
+    setOriginalData(_originalData)
   };
 
   const onDeleteBill = (billId: string) => {

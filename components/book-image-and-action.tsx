@@ -53,7 +53,13 @@ function BookImageAndAction({ book }: Props) {
       size="large"
     >
       <div className="w-full flex justify-center mb-5">
-        <Image src={book.img} />
+        <Image
+          src={book.img}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null;
+            currentTarget.src = "/static/images/book-image-default.png";
+          }}
+        />
       </div>
       {!(user && user?.isAdmin) && (
         <div className="flex flex-col gap-5">

@@ -44,7 +44,18 @@ const Index = ({ books }) => {
     {
       title: "Hình ảnh",
       dataIndex: "img",
-      render: (src) => <Image src={src} alt="" width={100} height={100} />,
+      render: (src) => (
+        <Image
+          src={src}
+          alt=""
+          width={100}
+          height={100}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null;
+            currentTarget.src = "/static/images/book-image-default.png";
+          }}
+        />
+      ),
     },
     {
       title: "Mô tả",
@@ -108,7 +119,12 @@ const Index = ({ books }) => {
     <>
       <div className="flex justify-between">
         <TableSearch className="mb-4" onSearch={onSearch} />
-        <Button type="primary" onClick={() => router.push("/book-management/create")}>Thêm mới sách</Button>
+        <Button
+          type="primary"
+          onClick={() => router.push("/book-management/create")}
+        >
+          Thêm mới sách
+        </Button>
       </div>
       <CustomTable data={data} columns={columns} />
     </>

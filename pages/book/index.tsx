@@ -186,8 +186,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     id: it?._id,
     slug: it.name,
   }));
-  // const publishers = (await PublisherService.getAllPublishers()) || [];
-  const publishers = [];
+  const publishers = (await PublisherService.getAllPublishers()) || [];
   const publisherData = publishers?.map((it) => ({
     ...it,
     id: it?._id,
