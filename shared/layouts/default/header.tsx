@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, Drawer, Layout, MenuProps, Modal, Space } from "antd";
+import React, { useEffect, useState } from "react";
+import { Badge, Button, Drawer, Layout, MenuProps, Modal, Space } from "antd";
 import Link from "next/link";
 import AvatarHeader from "@/components/avatar-header";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import { LocalStorageKey } from "@/constants/local-storage-key.const";
 import useLocalStorage from "@/hooks/use-local-storage";
 import useAuth from "@/hooks/use-auth";
+import CartService from "@/services/cart.service";
 
 function Header() {
   const {
@@ -32,12 +33,11 @@ function Header() {
   const [openDrawer, setOpenDrawer] = useState(false);
   const router = useRouter();
   const { loggedIn, user } = useAuth();
-  const [_a, __f ,clearToken] = useLocalStorage(LocalStorageKey.TOKEN)
+  const [_a, __f, clearToken] = useLocalStorage(LocalStorageKey.TOKEN);
   const showDrawer = () => {
     setOpenDrawer(true);
   };
   const [_, __, clearUser] = useLocalStorage(LocalStorageKey.USER);
-
   const onCloseDrawer = () => {
     setOpenDrawer(false);
   };
@@ -66,7 +66,7 @@ function Header() {
       label: <span>Đăng xuất</span>,
       onClick: () => {
         dispatch(logout());
-        clearUser()
+        clearUser();
         router.push("/");
         clearToken();
       },
@@ -108,7 +108,7 @@ function Header() {
         dispatch(logout());
         router.push("/");
         clearToken();
-        clearUser()
+        clearUser();
       },
     },
   ];

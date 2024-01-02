@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { getCartByUserId } from "@/services/cart.services";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Button,
   Form,
@@ -9,108 +8,169 @@ import {
   Table,
   Popconfirm,
   message,
+  Checkbox,
+  Modal,
 } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import Head from "next/head";
-import { useRouter } from "next/router";
+
 import UserService from "@/services/user.service";
-import { User } from "@/models/user.model";
 import useAuth from "@/hooks/use-auth";
+import { vndCurrencyFormat } from "@/utils/helper";
+import Head from "next/head";
+import CartService from "@/services/cart.service";
+import { CartInfo, CartItem } from "@/models/cart.model";
+import { useRouter } from "next/router";
+import BillService from "@/services/bill.service";
+
 const { Option } = Select;
 
-interface Item {
-  id: number;
-  name: string;
-  image: string;
-  quantity: number;
-  price: number;
-  color: string;
+interface Props {
+  userId: string;
 }
 
-const ShoppingCart: React.FC = () => {
-  const [items, setItems] = useState<Item[]>([]);
-  const [user, setUser] = useState<User>();
+interface Product {
+  id_category: string;
+  name: string;
+  price: number;
+  release_date: string;
+  img: string;
+  describe: string;
+  id_nsx: string;
+  count: number;
+  _id: string;
+}
+
+const ShoppingCart: React.FC<Props> = () => {
+  const [cartInfo, setCartInfo] = useState<CartInfo | null>(null);
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [form] = Form.useForm();
-  const router = useRouter();
-  const { user: userInfo } = useAuth();
-  const [userId, setUserId] = useState<string>(
-    (userInfo?.id as string) ?? "656c7f06657dab52d0053101"
-  );
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedOrderProducts, setSelectedOrderProducts] = useState<
+    CartItem[]
+  >([]);
+  const router = useRouter()
+  const { user } = useAuth();
+
+  const fetchCarts = useCallback(async () => {
+    CartService.getCart(user.id).then((data) => {
+      setCartInfo(data);
+    });
+  }, []);
+
+  const fetchUser = useCallback(async () => {
+    try {
+      const userData = await UserService.getUser(user.id);
+      form.setFieldsValue({
+        id: userData.id,
+        name: userData.name,
+        phone: userData.phone,
+        address: userData.address,
+        email: userData.email,
+      });
+    } catch (error) {
+      // Handle errors if needed
+    }
+  }, [form]);
 
   useEffect(() => {
-    const fetchCarts = async () => {
-      try {
-        const cartData = await getCartByUserId(userId);
-        setItems(cartData);
-      } catch (error) {
-        // Handle errors if needed
-      }
-    };
     fetchCarts();
-  }, [userId]);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await UserService.getUser(userId);
-        setUser(userData);
-
-        // Use the userData to set the form fields
-        form.setFieldsValue({
-          id: userData.id,
-          name: userData.name,
-          phone: userData.phone,
-          email: userData.email,
-        });
-      } catch (error) {
-        // Handle errors if needed
-      }
-    };
-
     fetchUser();
-  }, [userId, form]);
-
-  const [cardDetails, setCardDetails] = useState({
-    cardType: "Thanh toán lúc giao hàng",
-    cardholderName: "",
-    cardNumber: "",
-    expiration: "",
-    cvv: "",
-  });
+  }, [ fetchCarts, fetchUser]);
 
   const handleContinueShopping = () => {
-    // Implement logic for continuing shopping
+    router.push("/book")
   };
 
   const handleCheckout = () => {
-    // Implement logic for checkout
-    router.push("/buy-result");
+    if (selectedProducts.length === 0) {
+      message.error("Vui lòng chọn ít nhất một sản phẩm để tạo đơn hàng.");
+      return;
+    }
+
+    const selectedOrderProducts = cartInfo?.products.filter(({ _id }) =>
+      selectedProducts.includes(_id)
+    );
+
+    setSelectedOrderProducts(selectedOrderProducts || []);
+    setIsModalVisible(true);
   };
 
-  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const updatedCardDetails = {
-      cardType: formData.get("cardType") as string,
-      cardholderName: formData.get("cardholderName") as string,
-      cardNumber: formData.get("cardNumber") as string,
-      expiration: formData.get("expiration") as string,
-      cvv: formData.get("cvv") as string,
-    };
-    setCardDetails(updatedCardDetails);
+  const handleQuantityChange = async (id: string, value: number) => {
+    try {
+      await CartService.updateCart({
+        id_user: form.getFieldValue("id"),
+        id_product: id,
+        count: value,
+      });
+
+      setCartInfo((prevOrder) => {
+        if (!prevOrder) return null;
+
+        const updatedProducts = prevOrder.products.map((product) =>
+          product._id === id ? { ...product, count: value } : product
+        );
+
+        return { ...prevOrder, products: updatedProducts };
+      });
+
+      message.success("Số lượng sản phẩm đã được cập nhật.");
+    } catch (error) {
+      console.error("Error updating cart item quantity:", error);
+      message.error("Cập nhật số lượng sản phẩm thất bại. Vui lòng thử lại.");
+    }
   };
 
-  const handleQuantityChange = (id: number, value: number) => {
-    setItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: value } : item
-      )
+  const handleDelete = async (id: string) => {
+    try {
+      CartService.deleteItemFromCart({ id_user: user.id, id_product: id });
+
+      setCartInfo((prevOrder) => {
+        if (!prevOrder) return null;
+
+        const updatedProducts = prevOrder.products.filter(
+          (product) => product._id !== id
+        );
+
+        message.success("Sản phẩm đã được xóa.");
+        return { ...prevOrder, products: updatedProducts };
+      });
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      message.error("Xóa sản phẩm thất bại. Vui lòng thử lại.");
+    }
+  };
+
+  const handleProductSelection = (productId: string, isSelected: boolean) => {
+    setSelectedProducts((prevSelected) =>
+      isSelected
+        ? [...prevSelected, productId]
+        : prevSelected.filter((id) => id !== productId)
     );
   };
 
-  const handleDelete = (id: number) => {
-    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
-    message.success("Sản phẩm đã được xóa.");
+  const calculateTotalOrder = () => {
+    return selectedOrderProducts.reduce(
+      (total, product) => total + product.count * product.price,
+      0
+    );
+  };
+
+  const handleOk = async () => {
+    const orderPayload = {
+      id_user: form.getFieldValue("id"),
+      id_product: selectedProducts[0],
+    };
+
+    try {
+      await BillService.createBill(orderPayload, calculateTotalOrder())
+      message.success("Đơn hàng đã được tạo thành công.");
+    } catch (error) {
+      console.error("Error creating order:", error);
+      message.error("Tạo đơn hàng thất bại. Vui lòng thử lại.");
+    }
+
+    // Close the modal
+    setIsModalVisible(false);
   };
 
   return (
@@ -121,58 +181,69 @@ const ShoppingCart: React.FC = () => {
       <Card
         title="Giỏ hàng"
         extra={
-          <Button
-            type="primary"
-            size="small"
-            onClick={() => router.push("/book")}
-          >
+          <Button type="primary" size="small" onClick={handleContinueShopping}>
             ← Trở về
           </Button>
         }
       >
         <Table
-          dataSource={items}
+          dataSource={cartInfo?.products}
           columns={[
             {
+              title: "Chọn",
+              render: ({ _id }) => (
+                <Checkbox
+                  onChange={(e) =>
+                    handleProductSelection(_id, e.target.checked)
+                  }
+                  checked={selectedProducts.includes(_id)}
+                />
+              ),
+            },
+            {
               title: "Sản phẩm",
-              render: (row) => (
+              render: ({ img, name }) => (
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <img
-                    src={row.image}
-                    alt={row.name}
+                    src={img}
+                    alt={name}
                     style={{ marginRight: 8, width: 50, height: 50 }}
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      target.src =
+                        "https://demofree.sirv.com/nope-not-here.jpg";
+                    }}
                   />
-                  {row.name}
+                  {name}
                 </div>
               ),
             },
             {
               title: "Số lượng",
-              dataIndex: "quantity",
-              render: (text, record) => (
+              dataIndex: "count",
+              render: (text, { _id }) => (
                 <Input
                   type="number"
                   value={text}
-                  onChange={(e) =>
-                    handleQuantityChange(record.id, +e.target.value)
-                  }
+                  onChange={(e) => handleQuantityChange(_id, +e.target.value)}
                 />
               ),
             },
             {
               title: "Giá",
               dataIndex: "price",
+              render: (price) => <>{vndCurrencyFormat(price * 1000)}</>,
             },
             {
               title: "Tổng",
-              render: (row) => row.quantity * row.price,
+              render: ({ count, price }) => vndCurrencyFormat(count * price * 1000),
             },
             {
               title: "Xóa",
-              render: (row) => (
+              render: ({ _id }) => (
                 <Popconfirm
                   title="Bạn có chắc muốn xóa sản phẩm này?"
-                  onConfirm={() => handleDelete(row.id)}
+                  onConfirm={() => handleDelete(_id)}
                   okText="Yes"
                   cancelText="No"
                 >
@@ -181,35 +252,94 @@ const ShoppingCart: React.FC = () => {
               ),
             },
           ]}
+          rowKey="_id"
         />
 
-        <Form
-          form={form}
-          className="card-details-form"
-          name="card-details-form"
-          // onSubmit={handleFormSubmit}
-        >
-          <h2>Thông tin thanh toán</h2>
-          <Form.Item label="Loại thanh toán" name="cardType">
-            <Select>
+        <Form form={form} name="card-details-form">
+          <h2 className="mb-5">Thông tin thanh toán</h2>
+          <div className="font-medium mb-3">Hình thức thanh toán</div>
+          <Form.Item name="cardType" className="-ml-1">
+            <Select size="large">
               <Option value="1">Thanh toán lúc giao hàng</Option>
             </Select>
           </Form.Item>
-          <Form.Item label="Tên" name="name">
-            <Input />
+          <div className="font-medium mb-3">Tên</div>
+          <Form.Item name="name" className="-ml-1">
+            <Input disabled size="large" />
           </Form.Item>
-          <Form.Item label="Số điện thoại" name="phone">
-            <Input />
+          <div className="font-medium mb-3">Số điện thoại</div>
+          <Form.Item name="phone" className="-ml-1">
+            <Input disabled size="large" />
           </Form.Item>
-          <Form.Item label="Email" name="email">
-            <Input />
+          <div className="font-medium mb-3">Email</div>
+          <Form.Item name="email" className="-ml-1">
+            <Input disabled size="large" />
           </Form.Item>
-          <Form.Item label="Địa chỉ" name="address">
-            <Input />
+          <div className="font-medium mb-3">Địa chỉ</div>
+          <Form.Item name="address" className="-ml-1">
+            <Input disabled size="large" />
           </Form.Item>
-          <Button type="primary" htmlType="submit" onClick={handleCheckout}>
-            Tạo đơn hàng
-          </Button>
+          <div className="flex justify-end">
+            <Button type="primary" onClick={handleCheckout} size="large">
+              Tạo đơn hàng
+            </Button>
+          </div>
+          <div>
+            <Modal
+              title="Thông tin đơn hàng"
+              open={isModalVisible}
+              onCancel={() => setIsModalVisible(false)}
+              onOk={handleOk}
+              width={1000}
+            >
+              <div className="mb-4 leading-8">
+                <p>
+                  <b>Tên: </b> {form.getFieldValue("name")}
+                </p>
+                <p>
+                  <b>Email: </b> {form.getFieldValue("email")}
+                </p>
+                <p>
+                  <b>Số điện thoại: </b> {form.getFieldValue("phone")}
+                </p>
+                <p>
+                  <b>Địa chỉ: </b> {form.getFieldValue("address")}
+                </p>
+              </div>
+
+              <Table
+                dataSource={selectedOrderProducts}
+                pagination={false}
+                columns={[
+                  {
+                    title: "Số thứ tự",
+                    dataIndex: "index",
+                    key: "index",
+                    render: (text, record, index) => index + 1,
+                  },
+                  {
+                    title: "Sản phẩm",
+                    dataIndex: "name",
+                    key: "name",
+                  },
+                  {
+                    title: "Số lượng",
+                    dataIndex: "count",
+                    key: "count",
+                  },
+                  {
+                    title: "Giá",
+                    dataIndex: "price",
+                    key: "price",
+                    render: (price) => vndCurrencyFormat(price * 1000)
+                  },
+                ]}
+              />
+              <p className="my-6 text-lg text-right">
+                Tổng đơn:<b> {vndCurrencyFormat(calculateTotalOrder() * 1000)} </b>
+              </p>
+            </Modal>
+          </div>
         </Form>
       </Card>
     </div>
