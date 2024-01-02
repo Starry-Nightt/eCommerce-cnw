@@ -127,6 +127,18 @@ function Header() {
       path: ROUTE_PATH.ORDER,
     },
   ];
+
+  const navLinksBeforeLogin = [
+    {
+      name: "Trang chủ",
+      path: ROUTE_PATH.HOME,
+    },
+    {
+      name: "Tất cả sách",
+      path: ROUTE_PATH.BOOK,
+    }
+  ];
+
   const navLinksDrawer = [
     {
       name: "Trang chủ",
@@ -164,7 +176,7 @@ function Header() {
             <Logo />
             <div className="hidden md:block">
               <NavList
-                items={user?.isAdmin ? navLinksAdmin : navLinks}
+                items={user?.isAdmin ? navLinksAdmin : loggedIn ?  navLinks : navLinksBeforeLogin}
                 textWhite
               />
             </div>
