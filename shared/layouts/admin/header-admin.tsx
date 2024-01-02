@@ -21,6 +21,8 @@ function HeaderAdmin({ collapsed, setCollapsed }: Props) {
   const { loggedIn, user } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const [_, __, clearToken] = useLocalStorage(LocalStorageKey.TOKEN);
+  const [___, ____, clearUser] = useLocalStorage(LocalStorageKey.USER);
+
   const items: MenuProps["items"] = [
     {
       key: "1",
@@ -47,6 +49,7 @@ function HeaderAdmin({ collapsed, setCollapsed }: Props) {
         dispatch(logout());
         router.push("/");
         clearToken("");
+        clearUser()
       },
     },
   ];

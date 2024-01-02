@@ -32,10 +32,11 @@ function Header() {
   const [openDrawer, setOpenDrawer] = useState(false);
   const router = useRouter();
   const { loggedIn, user } = useAuth();
+  const [_a, __f ,clearToken] = useLocalStorage(LocalStorageKey.TOKEN)
   const showDrawer = () => {
     setOpenDrawer(true);
   };
-  const [_, __, clearToken] = useLocalStorage(LocalStorageKey.TOKEN);
+  const [_, __, clearUser] = useLocalStorage(LocalStorageKey.USER);
 
   const onCloseDrawer = () => {
     setOpenDrawer(false);
@@ -65,6 +66,7 @@ function Header() {
       label: <span>Đăng xuất</span>,
       onClick: () => {
         dispatch(logout());
+        clearUser()
         router.push("/");
         clearToken();
       },
@@ -106,6 +108,7 @@ function Header() {
         dispatch(logout());
         router.push("/");
         clearToken();
+        clearUser()
       },
     },
   ];
