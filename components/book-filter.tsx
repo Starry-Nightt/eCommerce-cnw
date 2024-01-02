@@ -3,7 +3,6 @@ import { Category } from "@/models/category.model";
 import { Publisher } from "@/models/publisher.model";
 import { Button, Card, Checkbox, Divider, Space } from "antd";
 import { CheckboxChangeEvent } from "antd/es/checkbox";
-import { it } from "node:test";
 import React, { Dispatch, SetStateAction } from "react";
 
 interface Props {
@@ -18,7 +17,7 @@ interface Props {
   setSelectedAuthors: Dispatch<SetStateAction<Author[]>>;
 }
 
-function CategoryList({
+function BookFilter({
   categories,
   authors,
   publishers,
@@ -67,50 +66,62 @@ function CategoryList({
   return (
     <Card title="Bộ lọc" bordered={true}>
       <Space direction="vertical" size="middle" className="w-full">
-        <Divider orientation="left">Danh mục</Divider>
-        {categories.map((item) => (
-          <Checkbox
-            key={item.id}
-            value={item.id}
-            className="select-none"
-            checked={selectedCategories
-              .map((category) => category.id)
-              .includes(item.id)}
-            onChange={(e) => onCheckCategory(e, item)}
-          >
-            {item.name}
-          </Checkbox>
-        ))}
-        <Divider orientation="left">Tác giả</Divider>
-        {authors &&
-          authors.map((item) => (
-            <Checkbox
-              key={item.id}
-              value={item.id}
-              className="select-none"
-              checked={selectedAuthors
-                .map((author) => author.id)
-                .includes(item.id)}
-              onChange={(e) => onCheckAuthor(e, item)}
-            >
-              {item.name}
-            </Checkbox>
-          ))}
-        <Divider orientation="left">Nhà sản xuất</Divider>
-        {publishers &&
-          publishers.map((item) => (
-            <Checkbox
-              key={item.id}
-              value={item.id}
-              className="select-none"
-              checked={selectedPublishers
-                .map((publisher) => publisher.id)
-                .includes(item.id)}
-              onChange={(e) => onCheckPublisher(e, item)}
-            >
-              {item.name}
-            </Checkbox>
-          ))}
+        {categories && !!categories.length && (
+          <>
+            <Divider orientation="left">Danh mục</Divider>
+            {categories.map((item) => (
+              <Checkbox
+                key={item.id}
+                value={item.id}
+                className="select-none"
+                checked={selectedCategories
+                  .map((category) => category.id)
+                  .includes(item.id)}
+                onChange={(e) => onCheckCategory(e, item)}
+              >
+                {item.name}
+              </Checkbox>
+            ))}
+          </>
+        )}
+
+        {authors && !!authors.length && (
+          <>
+            <Divider orientation="left">Tác giả</Divider>
+            {authors.map((item) => (
+              <Checkbox
+                key={item.id}
+                value={item.id}
+                className="select-none"
+                checked={selectedAuthors
+                  .map((author) => author.id)
+                  .includes(item.id)}
+                onChange={(e) => onCheckAuthor(e, item)}
+              >
+                {item.name}
+              </Checkbox>
+            ))}
+          </>
+        )}
+
+        {publishers && !!publishers.length && (
+          <>
+            <Divider orientation="left">Nhà sản xuất</Divider>
+            {publishers.map((item) => (
+              <Checkbox
+                key={item.id}
+                value={item.id}
+                className="select-none"
+                checked={selectedPublishers
+                  .map((publisher) => publisher.id)
+                  .includes(item.id)}
+                onChange={(e) => onCheckPublisher(e, item)}
+              >
+                {item.name}
+              </Checkbox>
+            ))}
+          </>
+        )}
         <Button
           type="primary"
           block
@@ -126,4 +137,4 @@ function CategoryList({
   );
 }
 
-export default CategoryList;
+export default BookFilter;

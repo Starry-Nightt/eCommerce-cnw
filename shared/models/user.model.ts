@@ -1,10 +1,12 @@
 import { Role } from "@/constants/app.const";
 
 export class User {
+  _id?: string;
   id: string;
-  username: string;
+  name: string;
   email: string;
   address?: string;
   avatar?: string;
-  role: Role;
+  isAdmin?: boolean;
+  phone?: string;
 }

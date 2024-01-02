@@ -1,37 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { getUserById, updateUser } from "@/services/user.services";
 import FormRules from "@/utils/form-rules";
-import { Button, Form, Input, message, Modal } from "antd";
+import { Button, Form, Input, message, Modal, Skeleton } from "antd";
 import { Typography } from "antd";
 import { notification } from "antd";
 import { EditOutlined } from "@ant-design/icons";
+import useAuth from "@/hooks/use-auth";
+import LayoutAdmin from "@/layouts/admin/layout-admin";
+import { useRouter } from "next/router";
+import { User } from "@/models/user.model";
+import UserService from "@/services/user.service";
 
 const { Title } = Typography;
 
-interface User {
-  id: number;
-  name: string;
-  age: number;
-  address: string;
-  phone: string;
-  email: string;
-  avatar: string;
-}
-
-const UserProfile: React.FC = ({ userId }: any) => {
-  const [user, setUser] = useState<User | null>(null);
+function Index() {
+  const [user, setUser] = useState<User>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [imageLink, setImageLink] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const router = useRouter();
+  const [userId, setUserId] = useState<string>(
+    (router.query?.userId as string) ?? "656c7f06657dab52d0053101"
+  );
 
   const fetchUser = async () => {
     try {
-      const userData = await getUserById("656c7f06657dab52d0053101");
+      const userData = await UserService.getUser(userId);
+      console.log(userData);
       setUser(userData);
     } catch (error) {
       console.error("Error fetching User", error);
     }
   };
+  const { loggedIn } = useAuth();
 
   useEffect(() => {
     fetchUser();
@@ -39,7 +39,6 @@ const UserProfile: React.FC = ({ userId }: any) => {
 
   const initialFormValues = (userData: User | null) => ({
     name: userData?.name || "",
-    age: userData?.age || "",
     address: userData?.address || "",
     phone: userData?.phone || "",
     email: userData?.email || "",
@@ -50,7 +49,6 @@ const UserProfile: React.FC = ({ userId }: any) => {
 
   const onFinish = async (values) => {
     try {
-      const userId = "656c7f06657dab52d0053101";
       const userUpdate = {
         name: values.name,
         age: values.age,
@@ -91,7 +89,7 @@ const UserProfile: React.FC = ({ userId }: any) => {
 
   const updateUserAndHandleErrors = async (userId: string, userData: any) => {
     try {
-      await updateUser(userId, userData);
+      await UserService.updateUser(userId, userData);
       return null;
     } catch (error) {
       return error.message || "Có lỗi xảy ra khi cập nhật thông tin user";
@@ -104,18 +102,17 @@ const UserProfile: React.FC = ({ userId }: any) => {
 
   const handleModalSubmit = async () => {
     try {
-      const userId = "656c7f06657dab52d0053101";
       const updateError = await updateUserAndHandleErrors(userId, {
         avatar: imageLink,
       });
-  
+
       if (!updateError) {
         notification.success({
           message: "Thông báo",
           description: "Cập nhật thông tin thành công!",
         });
         setIsEditing(false);
-        fetchUser(); 
+        fetchUser();
       } else {
         console.error("Error updating user avatar:", updateError);
         notification.error({
@@ -129,8 +126,6 @@ const UserProfile: React.FC = ({ userId }: any) => {
       setIsModalVisible(false);
     }
   };
-  
-
 
   const handleModalCancel = () => {
     setIsModalVisible(false);
@@ -149,13 +144,13 @@ const UserProfile: React.FC = ({ userId }: any) => {
               <img
                 src={
                   initialFormValues(user).image ||
-                  "https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg"
+                  "/static/images/avatar-default.jpg"
                 }
                 alt="avatar"
                 style={{ width: "300px", height: "300px", borderRadius: "50%" }}
                 onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                   const target = e.target as HTMLImageElement;
-                  target.src = "https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg";
+                  target.src = "/static/images/avatar-default.jpg";
                 }}
               />
               <div>
@@ -188,10 +183,6 @@ const UserProfile: React.FC = ({ userId }: any) => {
               <Title level={3}>Thông tin cá nhân</Title>
               <Form.Item label="Tên" name="name">
                 <Input size="large" value={user.name} disabled={!isEditing} />
-              </Form.Item>
-
-              <Form.Item label="Tuổi" name="age">
-                <Input size="large" value={user.age} disabled={!isEditing} />
               </Form.Item>
               <Form.Item label="Địa chỉ" name="address">
                 <Input
@@ -227,11 +218,11 @@ const UserProfile: React.FC = ({ userId }: any) => {
         </>
       ) : (
         <div>
-          <p>Loading...</p>
+          <Skeleton avatar paragraph={{ rows: 4 }} />;
         </div>
       )}
     </div>
   );
-};
+}
 
-export default UserProfile;
+export default Index;

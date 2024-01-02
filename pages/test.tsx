@@ -9,8 +9,6 @@ function Test() {
     "https://jsonplaceholder.typicode.com/todos"
   );
 
-  useLogger(data);
-
   return (
     <>
       {loading ? <h2>Loading</h2> : error ? <EmptyData /> : <h2>Done</h2>}

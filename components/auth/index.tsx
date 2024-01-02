@@ -1,5 +1,5 @@
 import useToggle from "@/hooks/use-toggle";
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import RegisterForm from "./resgiter-form";
 import LoginForm from "./login-form";
 import { App } from "antd";
@@ -7,9 +7,10 @@ import { LoginDetail, RegisterDetail } from "@/models/auth.model";
 import { useDispatch } from "react-redux";
 import { login } from "@/redux/user.slice";
 import { User } from "@/models/user.model";
-import { Role } from "@/constants/app.const";
+import UserService from "@/services/user.service";
 import useLocalStorage from "@/hooks/use-local-storage";
 import { LocalStorageKey } from "@/constants/local-storage-key.const";
+import { useRouter } from "next/router";
 
 interface Props {
   register: boolean;
@@ -18,25 +19,57 @@ interface Props {
 
 function AuthForm({ register, afterSubmit }: Props) {
   const [visible, toggle] = useToggle(register);
-  const { message } = App.useApp();
+  const { message, notification } = App.useApp();
   const dispatch = useDispatch();
+  const [token, setToken] = useLocalStorage(LocalStorageKey.TOKEN);
+  const [loading, toggleLoading] = useToggle(false);
+  const router = useRouter();
 
-  const loginAccount = (detail: LoginDetail) => {
-    const user: User = {
-      id: "123",
-      username: "Dang Tien",
-      email: "dangtien@gmail.com",
-      address: "Ha noi",
-      role: Role.NORMAL,
-    };
-    dispatch(login(user));
-    message.success("Login success !");
-    afterSubmit();
+  const loginAccount = async (detail: LoginDetail) => {
+    toggleLoading(true);
+    try {
+      const res = await UserService.login(detail);
+      const user: User = [res?.user].map((it) => ({
+        ...it,
+      }))[0];
+      setToken(res?.token || "");
+      if (Object.keys(user).length ) {
+        dispatch(login(user));
+        message.success("Login success !");
+        afterSubmit?.();
+        if (user?.isAdmin) {
+          router.push("/dashboard");
+        }
+      } else {
+        notification.error({
+          message: 'Tài khoản hoặc mật khẩu ko đúng',
+          placement: "topLeft",
+        });
+      }
+    } catch (err) {
+      notification.error({
+        message: err?.message ?? `Đã có lỗi xảy ra. Hãy thử lại`,
+        placement: "topLeft",
+      });
+    } finally {
+      toggleLoading(false);
+    }
   };
 
-  const registerAccount = (detail: RegisterDetail) => {
-    message.success("Register success !");
-    toggle();
+  const registerAccount = async (detail: RegisterDetail) => {
+    try {
+      toggleLoading(true);
+      await UserService.register(detail);
+      message.success("Register success !");
+      toggle();
+    } catch {
+      notification.error({
+        message: `Đã có lỗi xảy ra. Hãy thử lại`,
+        placement: "topLeft",
+      });
+    } finally {
+      toggleLoading(false);
+    }
   };
 
   const onFinishFailed = (text: string) => {
@@ -50,12 +83,14 @@ function AuthForm({ register, afterSubmit }: Props) {
           onToggleForm={toggle}
           onFinish={registerAccount}
           onFinishFailed={onFinishFailed}
+          loading={loading}
         />
       ) : (
         <LoginForm
           onToggleForm={toggle}
           onFinish={loginAccount}
           onFinishFailed={onFinishFailed}
+          loading={loading}
         />
       )}
     </>

@@ -3,8 +3,6 @@ import { Card} from "antd";
 import React from "react";
 import {
   ShoppingCartOutlined,
-  EyeOutlined,
-  LikeOutlined,
 } from "@ant-design/icons";
 const { Meta } = Card;
 import {
@@ -12,25 +10,32 @@ import {
   truncateString,
   vndCurrencyFormat,
 } from "@/utils/helper";
+import { useRouter } from "next/router";
+import useAuth from "@/hooks/use-auth";
 
 interface Props {
   book: Book;
 }
 
 function BookListItem({ book }: Props) {
-  const str =
-    "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptate dolor neque non asperiores dolorum consequuntur officiis laudantium quaerat tenetur fugit!";
+  const router = useRouter();
+  const {user} = useAuth()
+
+  const onViewDetail = () => {
+    router.push(`/book/${book._id}`)
+  }
+
   const description = (
     <div>
-      <div className="mb-2">{truncateString(str,40)}</div>
+      <div className="mb-2">{truncateString(book.describe)}</div>
       <div className="flex justify-between mb-3 items-center">
-        <div className="text-primary font-medium">
-          Giá: {vndCurrencyFormat(book.price)}
+        <div className="text-cyan-600 font-medium">
+          Giá: {vndCurrencyFormat(book.price * 1000)}
         </div>
         <div className=" text-neutral-800 text-xs">Đã bán: {book.sales}</div>
       </div>
       <div className="text-xs">
-        Ngày sản xuất: {dateFormatted(book.releaseDate)}
+        Ngày sản xuất: {dateFormatted(book.release_date)}
       </div>
     </div>
   );
@@ -39,10 +44,16 @@ function BookListItem({ book }: Props) {
       cover={
         <img
           alt="book-image"
-          src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+          src={book.img ?? '/static/images/book-image-default.png'}
+          onClick={onViewDetail}
+          className="cursor-pointer"
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = null; 
+            currentTarget.src='/static/images/no-image.jpg';
+          }}
         />
       }
-      actions={[<LikeOutlined />, <EyeOutlined />, <ShoppingCartOutlined />]}
+      actions={!(user && user?.isAdmin) && [<ShoppingCartOutlined key={Math.floor(Math.random() * 1000000)} />]}
     >
       <Meta title={book.name} description={description} />
     </Card>

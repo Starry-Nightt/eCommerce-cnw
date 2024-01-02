@@ -17,8 +17,8 @@ import {
   deleteCartItem,
   updateCart,
 } from "@/services/cart.services";
-import { getUserById } from "@/services/user.services";
 import { createOrder } from "@/services/order.services";
+import UserService from "@/services/user.service";
 
 const { Option } = Select;
 
@@ -66,7 +66,7 @@ const ShoppingCart: React.FC<Props> = ({ userId }) => {
 
   const fetchUser = useCallback(async () => {
     try {
-      const userData = await getUserById("656c7f06657dab52d0053101");
+      const userData = await UserService.getUser("656c7f06657dab52d0053101");;
       form.setFieldsValue({
         id: userData.id,
         name: userData.name,
@@ -164,12 +164,11 @@ const ShoppingCart: React.FC<Props> = ({ userId }) => {
 
   const handleOk = async () => {
     const orderPayload = {
-      id_user: userId,
+      id_user: form.getFieldValue('id'),
       id_product: selectedProducts[0],
     };
 
     try {
-      window.alert(selectedProducts[0]);
       await createOrder(orderPayload);
       message.success("Đơn hàng đã được tạo thành công.");
     } catch (error) {
@@ -271,16 +270,16 @@ const ShoppingCart: React.FC<Props> = ({ userId }) => {
             </Select>
           </Form.Item>
           <Form.Item label="Tên" name="name">
-            <Input />
+            <Input disabled />
           </Form.Item>
           <Form.Item label="Số điện thoại" name="phone">
-            <Input />
+            <Input disabled/>
           </Form.Item>
           <Form.Item label="Email" name="email">
-            <Input />
+            <Input disabled/>
           </Form.Item>
           <Form.Item label="Địa chỉ" name="address">
-            <Input />
+            <Input disabled/>
           </Form.Item>
           <Button type="primary" onClick={handleCheckout}>
             Tạo đơn hàng

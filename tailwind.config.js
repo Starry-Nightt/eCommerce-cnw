@@ -6,7 +6,14 @@ module.exports = {
     "./shared/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      minHeight: {
+        chart: "400px",
+      },
+      height: {
+        chart: "500px",
+      },
+    },
   },
   plugins: [],
   corePlugins: {

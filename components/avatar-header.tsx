@@ -15,11 +15,9 @@ function AvatarHeader({ items, textWhite, user }: Props) {
       <Dropdown menu={{ items }} trigger={["click"]}>
         <div className="cursor-pointer flex items-center gap-2">
           <Avatar
-            size="default"
-            icon={<UserOutlined />}
-            style={{ backgroundColor: "#87d068" }}
+            src={user.avatar || '/static/images/avatar-default.jpg'}
           />
-          <span className={`font-medium select-none`}>{user?.username}</span>
+          <span className={`font-medium select-none`}>{user?.name}</span>
           <Button size="small" type="text" style={{'color': '#fff'}} className="mt-1" icon={<DownOutlined />} />
         </div>
       </Dropdown>
