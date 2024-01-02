@@ -6,6 +6,7 @@ import { ShoppingCartOutlined } from "@ant-design/icons";
 import { vndCurrencyFormat } from "@/utils/helper";
 import useAuth from "@/hooks/use-auth";
 import useAuthModal from "@/hooks/use-auth-modal";
+import { addToCart } from "@/services/cart.services";
 
 interface Props {
   book: Book;
@@ -20,9 +21,21 @@ function BookImageAndAction({ book }: Props) {
 
   const desc = ["Rất tệ", "Tệ", "Ổn", "Tốt", "Tuyệt vời"];
 
-  const onAddToCart = () => {
+  const onAddToCart = async () => {
     if (!loggedIn) onShowLogin();
-    else message.success("Thêm vào giỏ hàng thành công");
+    else{
+      try {
+        await addToCart({
+          id_user: user.id,
+          id_product: book.id,
+          count: 1,
+        });
+        message.success("Thêm vào giỏ hàng thành công.");
+      } catch (error) {
+        console.error("Error add to cart:", error);
+        message.error("Thêm vào giỏ hàng thất bại. Vui lòng thử lại.");
+      }
+    } 
   };
 
   const onBuy = () => {

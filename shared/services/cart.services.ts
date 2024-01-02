@@ -32,7 +32,13 @@ interface UpdateCartItemRequest {
   count: number;
 }
 
-const baseUrl = 'https://cnweb-backend.onrender.com/cart';
+interface AddToCartRequest {
+  id_user: string;
+  id_product: string;
+  count: number;
+}
+
+const baseUrl = "https://cnweb-backend.onrender.com/cart";
 
 async function getCartByUserId(userId: string): Promise<Order> {
   const apiUrl = `${baseUrl}/${userId}`;
@@ -51,32 +57,53 @@ async function getCartByUserId(userId: string): Promise<Order> {
   }
 }
 
-export const deleteCartItem = async (requestData: DeleteCartItemRequest): Promise<void> => {
+export const deleteCartItem = async (
+  requestData: DeleteCartItemRequest
+): Promise<void> => {
   try {
     const response = await axios.post(`${baseUrl}/delete`, requestData);
 
     if (response.status === 200) {
-      console.log('Product deleted successfully.');
+      console.log("Product deleted successfully.");
     } else {
-      console.error('Failed to delete product from the cart.');
+      console.error("Failed to delete product from the cart.");
     }
   } catch (error) {
-    console.error('Error deleting product from the cart:', error);
+    console.error("Error deleting product from the cart:", error);
     throw error;
   }
 };
 
-export const updateCart = async (requestData: UpdateCartItemRequest): Promise<void> => {
+export const updateCart = async (
+  requestData: UpdateCartItemRequest
+): Promise<void> => {
   try {
     const response = await axios.post(`${baseUrl}/update`, requestData);
 
     if (response.status === 200) {
-      console.log('Cart updated successfully.');
+      console.log("Cart updated successfully.");
     } else {
-      console.error('Failed to update cart.');
+      console.error("Failed to update cart.");
     }
   } catch (error) {
-    console.error('Error updating cart:', error);
+    console.error("Error updating cart:", error);
+    throw error;
+  }
+};
+
+export const addToCart = async (
+  requestData: AddToCartRequest
+): Promise<void> => {
+  try {
+    const response = await axios.post(`${baseUrl}/addtocart`, requestData);
+
+    if (response.status === 200) {
+      console.log("Product added to the cart successfully.");
+    } else {
+      console.error("Failed to add product to the cart.");
+    }
+  } catch (error) {
+    console.error("Error adding product to the cart:", error);
     throw error;
   }
 };
