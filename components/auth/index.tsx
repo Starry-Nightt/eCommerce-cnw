@@ -1,5 +1,5 @@
 import useToggle from "@/hooks/use-toggle";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RegisterForm from "./resgiter-form";
 import LoginForm from "./login-form";
 import { App } from "antd";
@@ -22,6 +22,7 @@ function AuthForm({ register, afterSubmit }: Props) {
   const { message, notification } = App.useApp();
   const dispatch = useDispatch();
   const [token, setToken] = useLocalStorage(LocalStorageKey.TOKEN);
+  const [detail, setDetail] = useLocalStorage(LocalStorageKey.USER)
   const [loading, toggleLoading] = useToggle(false);
   const router = useRouter();
 
@@ -35,6 +36,7 @@ function AuthForm({ register, afterSubmit }: Props) {
       setToken(res?.token || "");
       if (Object.keys(user).length ) {
         dispatch(login(user));
+        setDetail({...user, password: detail.password})
         message.success("Login success !");
         afterSubmit?.();
         if (user?.isAdmin) {
@@ -71,6 +73,8 @@ function AuthForm({ register, afterSubmit }: Props) {
       toggleLoading(false);
     }
   };
+
+
 
   const onFinishFailed = (text: string) => {
     message.error(text);

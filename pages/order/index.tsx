@@ -1,10 +1,6 @@
 // Import necessary components
 import React, { useState, useEffect } from "react";
-import {
-  getOrdersByUserId,
-  updateIssendOrder,
-  deleteOrder,
-} from "@/services/order.services";
+
 import {
   Button,
   Card,
@@ -15,59 +11,40 @@ import {
   Modal,
   DatePicker,
   Input,
+  Tag,
 } from "antd";
 import useAuth from "@/hooks/use-auth";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import BillService from "@/services/bill.service";
+import { BillInfo, BillStatus } from "@/models/bill.model";
+import {
+  convertDateFormat2,
+  getLabelBillStatus,
+  vndCurrencyFormat,
+} from "@/utils/helper";
+import { Moment } from "moment";
+import _default from "antd/es/theme";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-interface OrderItem {
-  _id: string;
-  user_id: string;
-  issend: "99" | "1" | "0";
-  total: number;
-  date: string;
-  phone: string;
-  name: string;
-  products: ProductItem[];
-}
-
-interface ProductItem {
-  id_category: string;
-  name: string;
-  count: number;
-  price: number;
-  img: string;
-  // ... (other properties)
-}
-
 const OrderPage: React.FC = () => {
-  const [items, setItems] = useState<OrderItem[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [statusOptions, setStatusOptions] = useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = useState<string | undefined>(
-    undefined
-  );
-  const [dateRangeFilter, setDateRangeFilter] = useState<
-    [string, string] | undefined
-  >(undefined);
-  const [selectedOrder, setSelectedOrder] = useState<OrderItem | null>(null);
+  const [originalItems, setOriginalItems] = useState<BillInfo[]>([]);
+  const [items, setItems] = useState<BillInfo[]>([]);
+  const [statusFilter, setStatusFilter] = useState<BillStatus | string>('all');
+
   const [visibleModals, setVisibleModals] = useState<{
     [key: string]: boolean;
   }>({});
   const { loggedIn, user } = useAuth();
+  const router = useRouter();
 
   const fetchOrders = async () => {
-    console.log(user);
     try {
-      const orders = await getOrdersByUserId(
-        user.id || "656c7f06657dab52d0053101"
-      );
+      const orders = await BillService.getBillByUserId(user.id);
       setItems(orders);
-
-      const uniqueStatusOptions = orders.map((o) => o.issend);
-      setStatusOptions(Array.from(new Set(uniqueStatusOptions)));
+      setOriginalItems(orders);
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
@@ -78,7 +55,6 @@ const OrderPage: React.FC = () => {
   }, []);
 
   const openOrderDetailModal = (record) => {
-    setSelectedOrder(record);
     setVisibleModals((prev) => ({ ...prev, [record._id]: true }));
   };
 
@@ -90,23 +66,12 @@ const OrderPage: React.FC = () => {
     setVisibleModals((prev) => ({ ...prev, [orderId]: false }));
   };
 
-  function getStatusName(issend) {
-    if (issend == "0") return "Đã xử lý";
-    else if (issend == "1") return "Đang xử lý";
-    else if (issend == "99") return "Đang chờ";
-  }
-
-  const filteredItems = items.filter(
-    (item) =>
-      (!statusFilter ||
-        statusFilter === "Tất cả" ||
-        item.issend === statusFilter) &&
-      (!dateRangeFilter ||
-        (item.date >= dateRangeFilter[0] && item.date <= dateRangeFilter[1]))
-  );
 
   return (
     <div>
+      <Head>
+        <title>Đơn hàng</title>
+      </Head>
       <Card
         title="Đơn hàng của bạn"
         extra={
@@ -114,7 +79,7 @@ const OrderPage: React.FC = () => {
             type="primary"
             size="small"
             onClick={() => {
-              /* Handle continue shopping */
+              router.push("/book");
             }}
           >
             ← Trở về
@@ -124,32 +89,18 @@ const OrderPage: React.FC = () => {
         <div style={{ marginBottom: 16 }}>
           <Select
             style={{ width: 200, marginRight: 8 }}
-            placeholder="Chọn trạng thái"
+            placeholder="Chọn trạng thái đơn hàng"
             onChange={(value) => setStatusFilter(value)}
+            value={statusFilter}
           >
-            <Option value="Tất cả">Tất cả</Option>
-
-            {statusOptions.map((option) => (
-              <Option key={option} value={option}>
-                {option === "99"
-                  ? "Đang chờ"
-                  : option === "1"
-                  ? "Đang xử lý"
-                  : "Đã xử lý"}
-              </Option>
-            ))}
+            <Option value={"all"}>Tất cả</Option>
+            <Option value={BillStatus.CHECK}>Đã xử lý</Option>
+            <Option value={BillStatus.UNCHECK}>Chưa xử lý</Option>
+            <Option value={BillStatus.SENDING}>Đang vận chuyển</Option>
           </Select>
-          <RangePicker
-            style={{ marginRight: 8 }}
-            onChange={(dates) =>
-              setDateRangeFilter(
-                dates ? [dates[0].format(), dates[1].format()] : undefined
-              )
-            }
-          />
         </div>
         <Table
-          dataSource={filteredItems}
+          dataSource={items}
           columns={[
             {
               title: "STT",
@@ -171,6 +122,7 @@ const OrderPage: React.FC = () => {
               title: "Tổng giá (VNĐ)",
               dataIndex: "total",
               key: "total",
+              render: (price) => vndCurrencyFormat(price * 1000),
             },
             {
               title: "Thời gian tạo",
@@ -183,27 +135,30 @@ const OrderPage: React.FC = () => {
             {
               title: "Trạng thái",
               key: "status",
-              render: (record) => <span>{getStatusName(record.issend)}</span>,
+              render: (issend: BillStatus) => {
+                const color =
+                  issend === BillStatus.SENDING
+                    ? "geekblue"
+                    : issend === BillStatus.CHECK
+                    ? "green"
+                    : "crimson";
+                return <Tag color={color}>{getLabelBillStatus(issend)}</Tag>;
+              },
             },
             {
-              title: "Xem chi tiết",
+              title: "Hành động",
               key: "viewDetail",
               render: (record) => (
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
+                <div>
                   <Button
                     type="primary"
                     size="small"
                     onClick={() => openOrderDetailModal(record)}
                   >
-                    Xem
+                    Xem chi tiết
                   </Button>
                   <Modal
+                    width={1000}
                     title="Thông tin đơn hàng"
                     open={visibleModals[record._id]}
                     onOk={() => handleModalSubmit(record._id)}
@@ -229,11 +184,13 @@ const OrderPage: React.FC = () => {
                     </p>
                     <p>
                       <b>Trạng thái đơn hàng: </b>
-                      {getStatusName(record.issend)}
+                      {getLabelBillStatus(record.issend)}
                     </p>
                     <br />
                     <Table
                       dataSource={record.products}
+                      className="mb-6"
+                      pagination={false}
                       columns={[
                         {
                           title: "Số thứ tự",
@@ -274,17 +231,18 @@ const OrderPage: React.FC = () => {
                           title: "Tổng giá",
                           dataIndex: "price",
                           key: "price",
+                          render: (price) => vndCurrencyFormat(price),
                         },
                       ]}
                     />
-                    <p>
-                      <b>Tổng giá đơn: </b>
-                      {record.total}
-                    </p>
-                    <p>
-                      <b>Phương thức thanh toán: </b>
-                      {"giao hàng tại nhà"}
-                    </p>
+                    <div className="flex justify-between mb-3">
+                      <span>Tổng giá đơn:</span>
+                      <b>{vndCurrencyFormat(record.total)}</b>
+                    </div>
+                    <div className="flex justify-between mb-5">
+                      <span>Phương thức thanh toán: </span>
+                      <b>{"Giao hàng tại nhà"}</b>
+                    </div>
                   </Modal>
                 </div>
               ),

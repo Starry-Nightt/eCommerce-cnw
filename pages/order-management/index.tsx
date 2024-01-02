@@ -135,7 +135,7 @@ const Index = ({ bills }: Props) => {
     setFilterKey(e.target.value);
   };
 
-  const onUpdateStatus = (billId: string, status: BillStatus) => {
+  const onUpdateStatus = async (billId: string, status: BillStatus) => {
     const _data = data.map((it) => {
       if (it._id === billId) return { ...it, issend: status };
       else return it;
@@ -144,11 +144,14 @@ const Index = ({ bills }: Props) => {
       if (it._id === billId) return { ...it, issend: status };
       else return it;
     });
-    setData(_data);
-    setOriginalData(_originalData)
+    BillService.updateBill({ id: billId, issend: status }).then(() => {
+      setData(_data);
+      setOriginalData(_originalData);
+    });
   };
 
   const onDeleteBill = (billId: string) => {
+
     setOriginalData((prev) => prev.filter((it) => it._id !== billId));
   };
 

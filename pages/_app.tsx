@@ -7,6 +7,7 @@ import { store } from "@/redux/store";
 import createLoadingInterceptor from "@/interceptors/loading.interceptor";
 import { ArrowUpOutlined } from "@ant-design/icons";
 import useToggle from "@/hooks/use-toggle";
+import AppContainer from "@/components/app-container";
 
 function MyApp({ Component, pageProps }) {
   const [visible, toggle] = useToggle(false);
@@ -37,13 +38,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <App>
       <Providers>
-        {Component.getLayout ? (
-          Component.getLayout(<Component {...pageProps} />)
-        ) : (
-          <LayoutDefault>
-            <Component {...pageProps} />
-          </LayoutDefault>
-        )}
+        <AppContainer Component={Component} pageProps={pageProps} />
 
         <FloatButton
           shape="square"
