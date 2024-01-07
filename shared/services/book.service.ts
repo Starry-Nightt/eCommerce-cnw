@@ -19,8 +19,8 @@ class AppBookService {
     return http.get(`/book/${bookId}`);
   };
 
-  getCommentsOfBook = (bookId: String): Promise<Comment[]> => {
-    return httpTest.get(`/comments/${bookId}`);
+  getCommentsOfBook = (bookId: String): Promise<any> => {
+    return http.get(`book/comment/${bookId}`);
   };
 
   deleteBook = (bookId: String): Promise<any> => {
@@ -35,15 +35,15 @@ class AppBookService {
     return http.post(`/admin/updatebook/${id}`, bookDetail);
   };
 
-  getCommentOfBook = (bookId: string) => {
-    return httpTest.get(`/comments/${bookId}`);
-  };
+  // getCommentOfBook = (bookId: string) => {
+  //   return http.get(`book/comments/${bookId}`);
+  // };
 
   createCommentBook = (
     bookId: string,
     detail: CommentDetail
   ): Promise<Comment> => {
-    return httpTest.post(`/comments/${bookId}`, detail);
+    return http.post(`book/comment/${bookId}`, detail);
   };
 
   getRatingOfBook = (bookId: string): Promise<number> => {

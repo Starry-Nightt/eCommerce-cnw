@@ -67,7 +67,8 @@ function BookComments({ comments, bookId }: Props) {
               title={
                 <div className="flex gap-3 items-center">
                   <span>
-                    {loggedIn && item.userId === user?.id ? "BẠN" : item.name}
+                    {/* {loggedIn && item.userId === user?.id ? "BẠN" : item.user_id ? item.user_id.name : "" } */}
+                    {item.user_id ? item.user_id.name : ""}
                   </span>
                   <Rate
                     value={
@@ -77,7 +78,7 @@ function BookComments({ comments, bookId }: Props) {
                   ></Rate>
                 </div>
               }
-              description={item.body}
+              description={item.content}
             />
           </List.Item>
         )}
