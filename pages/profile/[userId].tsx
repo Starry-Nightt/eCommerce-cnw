@@ -9,6 +9,8 @@ import LayoutAdmin from "@/layouts/admin/layout-admin";
 import { useRouter } from "next/router";
 import { User } from "@/models/user.model";
 import UserService from "@/services/user.service";
+import { useDispatch } from "react-redux";
+import { update } from "@/redux/user.slice";
 
 const { Title } = Typography;
 
@@ -21,17 +23,17 @@ function Index() {
   const [userId, setUserId] = useState<string>(
     (router.query?.userId as string) ?? "656c7f06657dab52d0053101"
   );
+  const dispatch = useDispatch();
 
   const fetchUser = async () => {
     try {
       const userData = await UserService.getUser(userId);
-      console.log(userData);
       setUser(userData);
     } catch (error) {
       console.error("Error fetching User", error);
     }
   };
-  const { loggedIn } = useAuth();
+  const { loggedIn, user: userInfo } = useAuth();
 
   useEffect(() => {
     fetchUser();
@@ -90,6 +92,8 @@ function Index() {
   const updateUserAndHandleErrors = async (userId: string, userData: any) => {
     try {
       await UserService.updateUser(userId, userData);
+      console.log(userData);
+      dispatch(update({ ...userInfo, ...userData }));
       return null;
     } catch (error) {
       return error.message || "Có lỗi xảy ra khi cập nhật thông tin user";
