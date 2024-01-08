@@ -158,8 +158,10 @@ const ShoppingCart: React.FC<Props> = () => {
   const handleOk = async () => {
     const orderPayload = {
       id_user: form.getFieldValue("id"),
-      id_product: selectedProducts[0],
+      products: selectedProducts,
     };
+    console.log('orderPayload')
+    console.log(orderPayload)
 
     try {
       await BillService.createBill(orderPayload, calculateTotalOrder())
@@ -223,6 +225,7 @@ const ShoppingCart: React.FC<Props> = () => {
               dataIndex: "count",
               render: (text, { _id }) => (
                 <Input
+                  min={1}
                   type="number"
                   value={text}
                   onChange={(e) => handleQuantityChange(_id, +e.target.value)}

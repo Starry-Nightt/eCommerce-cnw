@@ -13,8 +13,8 @@ export interface Bill {
 
 export enum BillStatus {
   CHECK = "1",
-  UNCHECK = "0",
-  SENDING = "99",
+  SENDING = "0",
+  UNCHECK = "99",
 }
 
 export interface BillInfo {
