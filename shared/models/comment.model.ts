@@ -5,12 +5,17 @@ export class Comment {
   name: string;
   content: string;
   score: number;
-  user_id: CommentDetail
+  user_id: UserComment;
 }
 
 export interface CommentDetail {
-  user_id: string;
+  _id: string;
   name: string;
   content: string;
   score: number;
+}
+
+export interface UserComment {
+  _id?: string;
+  name: string;
 }
