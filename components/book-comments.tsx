@@ -12,19 +12,18 @@ interface Props {
 }
 
 function BookComments({ comments, bookId }: Props) {
-  const [loading, setLoading] = useState(false);
   const [commentList, setCommentList] = useState(comments ?? []);
   const { user, loggedIn } = useAuth();
   const userComment = useMemo(
     () =>
       commentList && loggedIn
-        ? commentList.find((it) => it.userId === user.id)
+        ? commentList.find((it) => it.user_id?._id === user.id)
         : null,
     [commentList]
   );
   const onAddComment = async (comment: CommentDetail) => {
     await BookService.createCommentBook(bookId, comment).then((res) => {
-      setCommentList((prev) => [res, ...prev]);
+      setCommentList((prev) => [{...res, user_id: {name: 'BẠN'}}, ...prev]);
     });
   };
 
@@ -32,7 +31,7 @@ function BookComments({ comments, bookId }: Props) {
     setCommentList(comments);
   }, [comments]);
 
-  if (!commentList || loading) {
+  if (!commentList ) {
     const items = new Array(4).fill(0);
     return (
       <List
@@ -67,7 +66,7 @@ function BookComments({ comments, bookId }: Props) {
               title={
                 <div className="flex gap-3 items-center">
                   <span>
-                    {loggedIn && item.userId === user?.id ? "BẠN" : item.name}
+                    {loggedIn && item.user_id?._id === user?.id ? "BẠN" : item.user_id ? item.user_id.name : "" }
                   </span>
                   <Rate
                     value={
@@ -77,7 +76,7 @@ function BookComments({ comments, bookId }: Props) {
                   ></Rate>
                 </div>
               }
-              description={item.body}
+              description={item.content}
             />
           </List.Item>
         )}

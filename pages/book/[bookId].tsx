@@ -58,11 +58,12 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   const { params } = ctx;
   const { bookId } = params;
   const data = await BookService.getBookById(bookId as string);
-  const comments = await BookService.getCommentsOfBook(bookId as string);
+  const commentsData = await BookService.getCommentsOfBook(bookId as string);
+
   return {
     props: {
       book: data,
-      comments,
+      comments: commentsData.comments, 
     },
   };
 };

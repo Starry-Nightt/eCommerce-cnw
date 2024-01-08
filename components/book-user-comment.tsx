@@ -9,7 +9,7 @@ import { Comment, CommentDetail } from "@/models/comment.model";
 import AvatarHeader from "./avatar-header";
 
 interface Props {
-  onAddComment: (comment: CommentDetail) => void;
+  onAddComment: (comment: any) => void;
 }
 
 function BookUserComment({ onAddComment }: Props) {
@@ -18,13 +18,15 @@ function BookUserComment({ onAddComment }: Props) {
   const [rate, setRate] = useState(null);
 
   const onComment = () => {
-    const newComment: CommentDetail = {
-      body: comment,
+    const newComment= {
+      content: comment,
       score: rate,
-      userId: user.id,
-      name: user.name,
+      user_id: user.id
+      // name: user.name,
     };
     onAddComment(newComment);
+    setComment("");
+    setRate(null);
   };
 
   return (
@@ -46,6 +48,7 @@ function BookUserComment({ onAddComment }: Props) {
           </div>
           <Rate value={rate} onChange={(e) => setRate(e)}></Rate>
           <TextArea
+            value={comment}
             showCount
             maxLength={100}
             onChange={(e) => setComment(e.target.value)}

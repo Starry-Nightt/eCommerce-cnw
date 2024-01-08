@@ -3,13 +3,19 @@ export class Comment {
   userId: string;
   bookId: string;
   name: string;
-  body: string;
+  content: string;
   score: number;
+  user_id: UserComment;
 }
 
 export interface CommentDetail {
-  userId: string;
+  _id: string;
   name: string;
-  body: string;
+  content: string;
   score: number;
+}
+
+export interface UserComment {
+  _id?: string;
+  name: string;
 }
