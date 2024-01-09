@@ -20,10 +20,12 @@ function BookDetail({ book, comments }: Props) {
   const { bookId } = router.query;
 
   useEffect(() => {
-    const rateValue = comments.reduce((prev, cur) => {
-      return prev + cur.score;
-    }, 0);
-    setRating(Math.floor((rateValue * 100) / comments.length) / 100);
+    if (comments) {
+      const rateValue = comments.reduce((prev, cur) => {
+        return prev + cur.score;
+      }, 0);
+      setRating(Math.floor((rateValue * 100) / comments.length) / 100);
+    }
   }, [bookId]);
 
   if (!book)
