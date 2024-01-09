@@ -22,11 +22,11 @@ function BookDetail({ book, comments }: Props) {
   useEffect(() => {
     if (comments) {
       const rateValue = comments.reduce((prev, cur) => {
-        return prev + cur.score;
+        return prev + cur?.score ?? 0;
       }, 0);
       setRating(Math.floor((rateValue * 100) / comments.length) / 100);
     }
-  }, [bookId]);
+  }, [bookId, comments]);
 
   if (!book)
     return (
@@ -43,9 +43,15 @@ function BookDetail({ book, comments }: Props) {
       <h3 className="text-2xl font-light tracking-wide mb-1">{book.author}</h3>
       <div className="flex items-center gap-6">
         <Rate value={rating} disabled className="translate-y-1" />
-        <h4 className="text-2xl font-medium font-serif tracking-wider">
-          {rating}
-        </h4>
+        {rating ? (
+          <h4 className="text-2xl font-medium font-serif tracking-wider">
+            {rating}/5
+          </h4>
+        ) : (
+          <span className="text-base font-medium font-serif tracking-wider">
+            Chưa có đánh giá
+          </span>
+        )}
       </div>
       <Typography.Paragraph className="text-base mt-3">
         {showFull ? (

@@ -25,7 +25,6 @@ function Index() {
   const fetchUser = async () => {
     try {
       const userData = await UserService.getUser(userId);
-      console.log(userData);
       setUser(userData);
     } catch (error) {
       console.error("Error fetching User", error);

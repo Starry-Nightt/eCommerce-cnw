@@ -9,29 +9,37 @@ import BookService from "@/services/book.service";
 interface Props {
   comments: Comment[];
   bookId: string;
+  onFetchComment: () => void;
 }
 
-function BookComments({ comments, bookId }: Props) {
+function BookComments({ comments, bookId, onFetchComment }: Props) {
   const [commentList, setCommentList] = useState(comments ?? []);
   const { user, loggedIn } = useAuth();
+  
   const userComment = useMemo(
     () =>
       commentList && loggedIn
-        ? commentList.find((it) => it.user_id?._id === user.id)
+        ? commentList?.find((it) => it.user_id?._id === user.id)
         : null,
     [commentList]
   );
+
+
   const onAddComment = async (comment: CommentDetail) => {
     await BookService.createCommentBook(bookId, comment).then((res) => {
-      setCommentList((prev) => [{...res, user_id: {name: 'BẠN'}}, ...prev]);
+      setCommentList((prev) => [
+        { ...res, user_id: { name: "BẠN", _id: user.id } },
+        ...prev,
+      ]);
     });
+    onFetchComment();
   };
 
   useEffect(() => {
     setCommentList(comments);
   }, [comments]);
 
-  if (!commentList ) {
+  if (!commentList) {
     const items = new Array(4).fill(0);
     return (
       <List
@@ -52,35 +60,36 @@ function BookComments({ comments, bookId }: Props) {
         <BookUserComment onAddComment={onAddComment} />
       )}
 
-      {commentList && !!commentList.length && <List
-        itemLayout="horizontal"
-        dataSource={commentList}
-        renderItem={(item, idx) => (
-          <List.Item>
-            <List.Item.Meta
-              avatar={
-                <Avatar
-                  src={user?.avatar ?? "/static/images/avatar-default.jpg"}
-                />
-              }
-              title={
-                <div className="flex gap-3 items-center">
-                  <span>
-                    {loggedIn && item.user_id?._id === user?.id ? "BẠN" : item.user_id ? item.user_id.name : "" }
-                  </span>
-                  <Rate
-                    value={
-                      item.score
-                    }
-                    disabled
-                  ></Rate>
-                </div>
-              }
-              description={item.content}
-            />
-          </List.Item>
-        )}
-      />}
+      {commentList && !!commentList.length && (
+        <List
+          itemLayout="horizontal"
+          dataSource={commentList}
+          renderItem={(item, idx) => (
+            <List.Item>
+              <List.Item.Meta
+                avatar={
+                  <Avatar
+                    src={user?.avatar ?? "/static/images/avatar-default.jpg"}
+                  />
+                }
+                title={
+                  <div className="flex gap-3 items-center">
+                    <span>
+                      {loggedIn && item.user_id?._id === user?.id
+                        ? "BẠN"
+                        : item.user_id
+                        ? item.user_id.name
+                        : ""}
+                    </span>
+                    <Rate value={item.score} disabled></Rate>
+                  </div>
+                }
+                description={item.content}
+              />
+            </List.Item>
+          )}
+        />
+      )}
     </div>
   );
 }

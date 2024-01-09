@@ -92,7 +92,6 @@ function Index() {
   const updateUserAndHandleErrors = async (userId: string, userData: any) => {
     try {
       await UserService.updateUser(userId, userData);
-      console.log(userData);
       dispatch(update({ ...userInfo, ...userData }));
       return null;
     } catch (error) {

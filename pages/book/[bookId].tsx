@@ -4,12 +4,28 @@ import BookService from "@/services/book.service";
 import { Button, Card, Col, Divider, Row, Typography } from "antd";
 import { GetStaticPaths, GetStaticProps } from "next";
 import Head from "next/head";
-import React from "react";
+import React, { useState } from "react";
 import { DoubleLeftOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import BookComments from "@/components/book-comments";
+import { BookDetailInfo } from "@/models/book.model";
+import { Comment } from "@/models/comment.model";
 
-function BookDetailPage({ book, comments }) {
+interface Props {
+  book: BookDetailInfo;
+  comments: Comment[];
+}
+
+function BookDetailPage({ book, comments }: Props) {
+  const [commentsList, setCommentList] = useState(comments);
+
+  const fetchComment = async () => {
+    const commentsData = await BookService.getCommentsOfBook(
+      book._id ?? book.id
+    );
+    setCommentList(commentsData.comments);
+  };
+
   const router = useRouter();
   return (
     <>
@@ -32,11 +48,18 @@ function BookDetailPage({ book, comments }) {
           </Col>
           <Col xs={24} sm={24} md={14} lg={16}>
             <>
-              <BookDetail book={book} comments={comments} />
+              <BookDetail
+                book={book}
+                comments={commentsList}
+              />
               <Divider>
                 <span className="text-lg">Đánh giá người dùng</span>
               </Divider>
-              <BookComments comments={comments} bookId={book?.id ?? book?._id} />
+              <BookComments
+                comments={commentsList}
+                bookId={book?.id ?? book?._id}
+                onFetchComment={fetchComment}
+              />
             </>
           </Col>
         </Row>
@@ -63,8 +86,8 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   return {
     props: {
       book: data,
-      comments: commentsData.comments, 
+      comments: commentsData.comments,
     },
-    revalidate: 100
+    revalidate: 100,
   };
 };

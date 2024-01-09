@@ -148,8 +148,6 @@ const OrderPage: React.FC = () => {
               title: "Trạng thái",
               key: "status",
               render: (record) => {
-                console.log('issend')
-                console.log(record)
                 const color =
                     record.issend === BillStatus.SENDING
                     ? "geekblue"

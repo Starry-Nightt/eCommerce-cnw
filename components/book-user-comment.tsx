@@ -16,6 +16,8 @@ function BookUserComment({ onAddComment }: Props) {
   const { user, loggedIn } = useAuth();
   const [comment, setComment] = useState("");
   const [rate, setRate] = useState(null);
+  const desc = ["Rất tệ", "Tệ", "Ổn", "Tốt", "Tuyệt vời"];
+
 
   const onComment = () => {
     const newComment= {
@@ -46,7 +48,7 @@ function BookUserComment({ onAddComment }: Props) {
 
             <span>{user?.email}</span>
           </div>
-          <Rate value={rate} onChange={(e) => setRate(e)}></Rate>
+          <Rate tooltips={desc} value={rate} onChange={(e) => setRate(e)}></Rate>
           <TextArea
             value={comment}
             showCount
