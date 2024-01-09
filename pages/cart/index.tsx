@@ -28,18 +28,6 @@ interface Props {
   userId: string;
 }
 
-interface Product {
-  id_category: string;
-  name: string;
-  price: number;
-  release_date: string;
-  img: string;
-  describe: string;
-  id_nsx: string;
-  count: number;
-  _id: string;
-}
-
 const ShoppingCart: React.FC<Props> = () => {
   const [cartInfo, setCartInfo] = useState<CartInfo | null>(null);
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
@@ -48,13 +36,15 @@ const ShoppingCart: React.FC<Props> = () => {
   const [selectedOrderProducts, setSelectedOrderProducts] = useState<
     CartItem[]
   >([]);
-  const router = useRouter()
+  const router = useRouter();
   const { user } = useAuth();
 
   const fetchCarts = useCallback(async () => {
-    CartService.getCart(user.id).then((data) => {
-      setCartInfo(data);
-    });
+    if (user) {
+      CartService.getCart(user.id).then((data) => {
+        setCartInfo(data);
+      });
+    }
   }, []);
 
   const fetchUser = useCallback(async () => {
@@ -75,10 +65,10 @@ const ShoppingCart: React.FC<Props> = () => {
   useEffect(() => {
     fetchCarts();
     fetchUser();
-  }, [ fetchCarts, fetchUser]);
+  }, [fetchCarts, fetchUser]);
 
   const handleContinueShopping = () => {
-    router.push("/book")
+    router.push("/book");
   };
 
   const handleCheckout = () => {
@@ -160,12 +150,17 @@ const ShoppingCart: React.FC<Props> = () => {
       id_user: form.getFieldValue("id"),
       products: selectedProducts,
     };
-    console.log('orderPayload')
-    console.log(orderPayload)
 
     try {
-      await BillService.createBill(orderPayload, calculateTotalOrder())
+      await BillService.createBill(orderPayload, calculateTotalOrder());
       message.success("Đơn hàng đã được tạo thành công.");
+      setCartInfo({
+        ...cartInfo,
+        products: cartInfo.products.filter(
+          (it) => !selectedProducts.includes(it._id)
+        ),
+      });
+      setSelectedProducts([]);
     } catch (error) {
       console.error("Error creating order:", error);
       message.error("Tạo đơn hàng thất bại. Vui lòng thử lại.");
@@ -239,7 +234,8 @@ const ShoppingCart: React.FC<Props> = () => {
             },
             {
               title: "Tổng",
-              render: ({ count, price }) => vndCurrencyFormat(count * price * 1000),
+              render: ({ count, price }) =>
+                vndCurrencyFormat(count * price * 1000),
             },
             {
               title: "Xóa",
@@ -334,12 +330,13 @@ const ShoppingCart: React.FC<Props> = () => {
                     title: "Giá",
                     dataIndex: "price",
                     key: "price",
-                    render: (price) => vndCurrencyFormat(price * 1000)
+                    render: (price) => vndCurrencyFormat(price * 1000),
                   },
                 ]}
               />
               <p className="my-6 text-lg text-right">
-                Tổng đơn:<b> {vndCurrencyFormat(calculateTotalOrder() * 1000)} </b>
+                Tổng đơn:
+                <b> {vndCurrencyFormat(calculateTotalOrder() * 1000)} </b>
               </p>
             </Modal>
           </div>

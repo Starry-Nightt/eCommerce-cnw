@@ -35,7 +35,7 @@ function HeaderAdmin({ collapsed, setCollapsed }: Props) {
     {
       key: "2",
       label: (
-        <Link href={`${user?.isAdmin ? "/test" : "/"}`}>Đổi mật khẩu</Link>
+        <Link href="/admin-profile/changePassword">Đổi mật khẩu</Link>
       ),
     },
     {

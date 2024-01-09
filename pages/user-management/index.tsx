@@ -3,7 +3,7 @@ import LayoutAdmin from "@/layouts/admin/layout-admin";
 import UserService from "@/services/user.service";
 import { Button, Popconfirm, Space, Tag, Typography, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetStaticProps } from "next";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { User } from "@/models/user.model";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ import { useRouter } from "next/router";
 const Index = ({ users }) => {
   const [data, setData] = useState<User[]>(users);
   const [key, setKey] = useState("");
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     if (key.trim().length) {
@@ -80,7 +80,10 @@ const Index = ({ users }) => {
       key: "action",
       render: (_id, record) => (
         <Space size="middle">
-          <Button icon={<EyeOutlined />} onClick={() => router.push("/admin-profile/" + _id)}></Button>
+          <Button
+            icon={<EyeOutlined />}
+            onClick={() => router.push("/admin-profile/" + _id)}
+          ></Button>
           <Popconfirm
             title="Xóa người dùng"
             description="Bạn có chắc chắn muốn xóa người dùng này?"
@@ -105,17 +108,18 @@ const Index = ({ users }) => {
       <div className="flex justify-end">
         <TableSearch className="mb-4 ml-auto" onSearch={onSearch} />
       </div>
-      <CustomTable data={data} columns={columns}  />
+      <CustomTable data={data} columns={columns} />
     </>
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const users = await UserService.getAllUsers();
   return {
     props: {
       users,
     },
+    revalidate: 60,
   };
 };
 

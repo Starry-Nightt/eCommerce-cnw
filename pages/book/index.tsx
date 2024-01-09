@@ -8,7 +8,7 @@ import AuthorService from "@/services/author.service";
 import BookService from "@/services/book.service";
 import PublisherService from "@/services/publisher.service";
 import { Row, Col, Button, App, Modal } from "antd";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetStaticProps } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -163,15 +163,9 @@ const Index = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { query } = ctx;
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const params = new URLSearchParams();
-  Object.keys(query).forEach((key) => {
-    const slugs = query[key];
-    if (Array.isArray(slugs)) {
-      slugs.forEach((slug) => params.append(key, slug));
-    } else params.append(key, slugs);
-  });
   const queryString = params.toString();
   const books = await BookService.getAllBook(queryString);
   const categories = (await BookService.getAllCategories()) || [];
@@ -200,7 +194,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       publishers: publisherData,
       queryStringPage: queryString,
     },
+    revalidate: 200
   };
-};
+}
 
 export default Index;

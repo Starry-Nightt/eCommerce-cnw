@@ -1,7 +1,7 @@
 import LayoutAdmin from "@/layouts/admin/layout-admin";
 import { Bill, BillStatus } from "@/models/bill.model";
 import BillService from "@/services/bill.service";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetStaticProps } from "next";
 import { useEffect, useState } from "react";
 import type { ColumnsType } from "antd/es/table";
 import {
@@ -151,7 +151,6 @@ const Index = ({ bills }: Props) => {
   };
 
   const onDeleteBill = (billId: string) => {
-
     setOriginalData((prev) => prev.filter((it) => it._id !== billId));
   };
 
@@ -181,12 +180,13 @@ const Index = ({ bills }: Props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const bills = await BillService.getAllBill();
   return {
     props: {
       bills,
     },
+    revalidate: 60,
   };
 };
 
