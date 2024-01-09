@@ -11,7 +11,7 @@ import {
   AccountBookOutlined,
 } from "@ant-design/icons";
 import { Row, Col, Card, Statistic } from "antd";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetStaticProps } from "next";
 
 interface Props {
   data: BookStatistic;
@@ -177,7 +177,7 @@ const Index = ({ data }: Props) => {
           yAxisName="Doanh thu"
         />
       </Col>
-      <Col lg={24} xl={12} >
+      <Col lg={24} xl={12}>
         <BarChart
           data={data.bilChart}
           labels={getRecentDates()}
@@ -190,10 +190,11 @@ const Index = ({ data }: Props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const data = await StatisticService.getGeneralStatistic();
   return {
     props: { data },
+    revalidate: 180,
   };
 };
 

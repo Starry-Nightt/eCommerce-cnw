@@ -1,7 +1,7 @@
 import LayoutAdmin from "@/layouts/admin/layout-admin";
 import { Book } from "@/models/book.model";
 import BookService from "@/services/book.service";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import type { ColumnsType } from "antd/es/table";
@@ -131,12 +131,13 @@ const Index = ({ books }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+export const getStaticProps: GetStaticProps = async (ctx) => {
   const books = await BookService.getAllBook();
   return {
     props: {
       books: books.data,
     },
+    revalidate: 60,
   };
 };
 
