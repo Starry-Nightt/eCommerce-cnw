@@ -21,9 +21,12 @@ interface Props {
 }
 
 const Index = ({ data, bills }: Props) => {
-  const billsInDay = bills.filter(it => isDateToday(it.date))
-  const billsInMonth = bills.filter(it => isDateInCurrentMonth(it.date))
-  const billsInYear = bills.filter(it => isDateInCurrentYear(it.date))
+  if (!bills) return <>
+  
+  </> 
+  const billsInDay = bills?.filter(it => isDateToday(it.date))
+  const billsInMonth = bills?.filter(it => isDateInCurrentMonth(it.date))
+  const billsInYear = bills?.filter(it => isDateInCurrentYear(it.date))
   const getRevenue = (bills: Bill[]) => {
     return Math.floor(bills.reduce((prev, cur) => prev + cur.total, 0) *1000)/1000
   }
