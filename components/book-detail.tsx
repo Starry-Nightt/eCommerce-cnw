@@ -6,23 +6,25 @@ import React, { useEffect, useState } from "react";
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import BookService from "@/services/book.service";
 import { useRouter } from "next/router";
+import { Comment } from "@/models/comment.model";
 
 interface Props {
   book: BookDetailInfo;
+  comments: Comment[];
 }
 
-function BookDetail({ book }: Props) {
+function BookDetail({ book, comments }: Props) {
   const [showFull, toggleShowFull] = useToggle(false);
   const [rating, setRating] = useState(null);
   const router = useRouter();
-  const {bookId} = router.query
+  const { bookId } = router.query;
 
   useEffect(() => {
-    BookService.getRatingOfBook(bookId as string).then((res) => {
-      setRating(res)
-    });
+    const rateValue = comments.reduce((prev, cur) => {
+      return prev + cur.score;
+    }, 0);
+    setRating(Math.floor((rateValue * 100) / comments.length) / 100);
   }, [bookId]);
-
 
   if (!book)
     return (

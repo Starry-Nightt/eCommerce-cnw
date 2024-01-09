@@ -32,7 +32,7 @@ function BookDetailPage({ book, comments }) {
           </Col>
           <Col xs={24} sm={24} md={14} lg={16}>
             <>
-              <BookDetail book={book} />
+              <BookDetail book={book} comments={comments} />
               <Divider>
                 <span className="text-lg">Đánh giá người dùng</span>
               </Divider>

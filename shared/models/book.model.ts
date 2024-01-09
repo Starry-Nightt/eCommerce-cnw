@@ -17,6 +17,7 @@ export class BookDetailInfo extends Book {
   category: string;
   nsx: string;
   author: string;
+  comments: Comment;
 }
 
 export interface BookUpdateInfo {

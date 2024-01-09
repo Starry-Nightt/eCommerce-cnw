@@ -45,10 +45,6 @@ class AppBookService {
   ): Promise<Comment> => {
     return http.post(`book/comment/${bookId}`, detail);
   };
-
-  getRatingOfBook = (bookId: string): Promise<number> => {
-    return httpTest.get(`/rating/${bookId}`);
-  };
 }
 
 const BookService = new AppBookService();
