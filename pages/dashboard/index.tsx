@@ -1,11 +1,19 @@
 import BarChart from "@/components/bar-chart";
 import useLogger from "@/hooks/use-logger";
 import LayoutAdmin from "@/layouts/admin/layout-admin";
-import { Bill } from "@/models/bill.model";
+import { Bill, BillStatus } from "@/models/bill.model";
 import { BookStatistic } from "@/models/statistic.model";
 import BillService from "@/services/bill.service";
 import StatisticService from "@/services/statistic.service";
-import { getCurrentYear, getRecentDates, isDateInCurrentMonth, isDateInCurrentYear, isDateToday } from "@/utils/helper";
+import {
+  convertDateFormat,
+  getCurrentYear,
+  getRecentDates,
+  isDateInCurrentMonth,
+  isDateInCurrentYear,
+  isDateToday,
+  vndCurrencyFormat,
+} from "@/utils/helper";
 import {
   ArrowUpOutlined,
   ArrowDownOutlined,
@@ -16,20 +24,46 @@ import { Row, Col, Card, Statistic } from "antd";
 import { GetServerSideProps, GetStaticProps } from "next";
 
 interface Props {
-  data: BookStatistic;
-  bills: Bill[]
+  bills: Bill[];
 }
 
-const Index = ({ data, bills }: Props) => {
-  if (!bills) return <>
-  
-  </> 
-  const billsInDay = bills?.filter(it => isDateToday(it.date))
-  const billsInMonth = bills?.filter(it => isDateInCurrentMonth(it.date))
-  const billsInYear = bills?.filter(it => isDateInCurrentYear(it.date))
+const recentDates = getRecentDates();
+
+const Index = ({ bills }: Props) => {
+  if (!bills) return <></>;
+  const billsInDay = bills?.filter((it) => isDateToday(it.date));
+  const billsInMonth = bills?.filter((it) => isDateInCurrentMonth(it.date));
+  const billsInYear = bills?.filter((it) => isDateInCurrentYear(it.date));
   const getRevenue = (bills: Bill[]) => {
-    return Math.floor(bills.reduce((prev, cur) => prev + cur.total, 0) *1000)/1000
-  }
+    return (
+      Math.floor(
+        bills
+          .filter((it) => it.issend === BillStatus.CHECK)
+          .reduce((prev, cur) => prev + cur.total, 0) * 1000
+      ) / 1000
+    );
+  };
+
+  const billChartData = recentDates.map((date) => {
+    const billsInDate = bills?.filter(
+      (bill) => convertDateFormat(bill.date) == date
+    );
+    return billsInDate.length;
+  });
+
+  const revenueChartData = recentDates.map((date) => {
+    const billsInDate = bills?.filter(
+      (bill) => convertDateFormat(bill.date) == date
+    );
+    return getRevenue(billsInDate);
+  });
+
+  const billRate =
+    billChartData[billChartData.length - 1] /
+    billChartData[billChartData.length - 2];
+  const revenueRate =
+    revenueChartData[revenueChartData.length - 1] /
+    revenueChartData[revenueChartData.length - 2];
 
   return (
     <Row gutter={[24, 24]}>
@@ -80,25 +114,22 @@ const Index = ({ data, bills }: Props) => {
           <Statistic
             title="Doanh thu tăng trưởng"
             value={
-              Math.floor(
-                (data.revenueRate.value >= 1
-                  ? data.revenueRate.value - 1
-                  : 1 - data.revenueRate.value) * 10000
-              ) / 100
+              isFinite(revenueRate)
+                ? Math.floor(
+                    (revenueRate >= 1 ? revenueRate - 1 : 1 - revenueRate) *
+                      10000
+                  ) / 100
+                : `Tăng ${vndCurrencyFormat(
+                    revenueChartData[revenueChartData.length - 1]
+                  )}`
             }
             valueStyle={
-              data.revenueRate.value >= 1
-                ? { color: "#3f8600" }
-                : { color: "#cf1322" }
+              revenueRate >= 1 ? { color: "#3f8600" } : { color: "#cf1322" }
             }
             prefix={
-              data.revenueRate.value >= 1 ? (
-                <ArrowUpOutlined />
-              ) : (
-                <ArrowDownOutlined />
-              )
+              revenueRate >= 1 ? <ArrowUpOutlined /> : <ArrowDownOutlined />
             }
-            suffix="%"
+            suffix={isFinite(revenueRate) ? "%" : null}
           />
         </Card>
       </Col>
@@ -159,31 +190,23 @@ const Index = ({ data, bills }: Props) => {
           <Statistic
             title="Tỉ lệ tăng trưởng đơn hàng"
             value={
-              Math.floor(
-                (data.billRate.value >= 1
-                  ? data.billRate.value - 1
-                  : 1 - data.billRate.value) * 10000
-              ) / 100
+              isFinite(billRate)
+                ? Math.floor(
+                    (billRate >= 1 ? billRate - 1 : 1 - billRate) * 10000
+                  ) / 100
+                : `Tăng thêm ${billChartData[billChartData.length - 1]}`
             }
             valueStyle={
-              data.billRate.value >= 1
-                ? { color: "#3f8600" }
-                : { color: "#cf1322" }
+              billRate >= 1 ? { color: "#3f8600" } : { color: "#cf1322" }
             }
-            prefix={
-              data.billRate.value >= 0 ? (
-                <ArrowUpOutlined />
-              ) : (
-                <ArrowDownOutlined />
-              )
-            }
-            suffix="%"
+            prefix={billRate >= 1 ? <ArrowUpOutlined /> : <ArrowDownOutlined />}
+            suffix={isFinite(billRate) ? "%" : null}
           />
         </Card>
       </Col>
       <Col lg={24} xl={12}>
         <BarChart
-          data={data.revenueChart}
+          data={revenueChartData}
           labels={getRecentDates()}
           title="Thống kê doanh thu 7 ngày gần nhất"
           xAxisName={`Ngày`}
@@ -192,7 +215,7 @@ const Index = ({ data, bills }: Props) => {
       </Col>
       <Col lg={24} xl={12}>
         <BarChart
-          data={data.bilChart}
+          data={billChartData}
           labels={getRecentDates()}
           title="Thống kê hóa đơn 7 ngày gần nhất"
           xAxisName={`Ngày`}
@@ -204,11 +227,10 @@ const Index = ({ data, bills }: Props) => {
 };
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
-  const data = await StatisticService.getGeneralStatistic();
   const bills = await BillService.getAllBill();
 
   return {
-    props: { data, bills },
+    props: { bills },
     revalidate: 180,
   };
 };
