@@ -65,5 +65,6 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
       book: data,
       comments: commentsData.comments, 
     },
+    revalidate: 100
   };
 };

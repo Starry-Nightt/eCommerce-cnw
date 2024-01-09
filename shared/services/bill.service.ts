@@ -8,7 +8,7 @@ class AppBillService {
   };
 
   createBill = (
-    data: { id_user: string; id_product: string },
+    data: { id_user: string; products: string[] },
     value: number
   ) => {
     StatisticService.addBill(value);

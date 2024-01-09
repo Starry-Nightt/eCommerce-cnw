@@ -59,7 +59,17 @@ function Header() {
     },
     {
       key: "2",
-      label: <Link href="/test">Đổi mật khẩu</Link>,
+      label: (
+        <Link
+          href={`${
+            user?.isAdmin
+              ? `/admin-profile/changePassword`
+              : `/profile/changePassword`
+          }`}
+        >
+          Đổi mật khẩu
+        </Link>
+      ),
     },
     {
       key: "3",
@@ -90,7 +100,9 @@ function Header() {
       label: (
         <Link
           href={`${
-            user?.isAdmin ? `/admin-profile/${user.id}` : `/profile/${user?.id}`
+            user?.isAdmin
+              ? `/admin-profile/changePassword`
+              : `/profile/changePassword`
           }`}
         >
           Đổi mật khẩu
@@ -136,7 +148,7 @@ function Header() {
     {
       name: "Tất cả sách",
       path: ROUTE_PATH.BOOK,
-    }
+    },
   ];
 
   const navLinksDrawer = [
@@ -176,7 +188,13 @@ function Header() {
             <Logo />
             <div className="hidden md:block">
               <NavList
-                items={user?.isAdmin ? navLinksAdmin : loggedIn ?  navLinks : navLinksBeforeLogin}
+                items={
+                  user?.isAdmin
+                    ? navLinksAdmin
+                    : loggedIn
+                    ? navLinks
+                    : navLinksBeforeLogin
+                }
                 textWhite
               />
             </div>

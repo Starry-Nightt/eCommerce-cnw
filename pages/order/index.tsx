@@ -54,6 +54,18 @@ const OrderPage: React.FC = () => {
     fetchOrders();
   }, []);
 
+  useEffect(() => {
+    // Filter orders based on the selected status
+    const filteredOrders = originalItems.filter((order) => {
+      if (statusFilter === 'all') {
+        return true;
+      }
+      return order.issend === statusFilter;
+    });
+
+    setItems(filteredOrders);
+  }, [statusFilter, originalItems]);
+
   const openOrderDetailModal = (record) => {
     setVisibleModals((prev) => ({ ...prev, [record._id]: true }));
   };
@@ -122,7 +134,7 @@ const OrderPage: React.FC = () => {
               title: "Tổng giá (VNĐ)",
               dataIndex: "total",
               key: "total",
-              render: (price) => vndCurrencyFormat(price * 1000),
+              render: (price) => vndCurrencyFormat(price*1000),
             },
             {
               title: "Thời gian tạo",
@@ -135,14 +147,16 @@ const OrderPage: React.FC = () => {
             {
               title: "Trạng thái",
               key: "status",
-              render: (issend: BillStatus) => {
+              render: (record) => {
+                console.log('issend')
+                console.log(record)
                 const color =
-                  issend === BillStatus.SENDING
+                    record.issend === BillStatus.SENDING
                     ? "geekblue"
-                    : issend === BillStatus.CHECK
+                    : record.issend === BillStatus.CHECK
                     ? "green"
                     : "crimson";
-                return <Tag color={color}>{getLabelBillStatus(issend)}</Tag>;
+                return <Tag color={color}>{getLabelBillStatus(record.issend)}</Tag>;
               },
             },
             {
@@ -231,13 +245,13 @@ const OrderPage: React.FC = () => {
                           title: "Tổng giá",
                           dataIndex: "price",
                           key: "price",
-                          render: (price) => vndCurrencyFormat(price),
+                          render: (price) => vndCurrencyFormat(price*1000),
                         },
                       ]}
                     />
                     <div className="flex justify-between mb-3">
                       <span>Tổng giá đơn:</span>
-                      <b>{vndCurrencyFormat(record.total)}</b>
+                      <b>{vndCurrencyFormat(record.total*1000)}</b>
                     </div>
                     <div className="flex justify-between mb-5">
                       <span>Phương thức thanh toán: </span>
