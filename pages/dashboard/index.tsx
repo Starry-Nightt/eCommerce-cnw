@@ -1,9 +1,11 @@
 import BarChart from "@/components/bar-chart";
+import useLogger from "@/hooks/use-logger";
 import LayoutAdmin from "@/layouts/admin/layout-admin";
+import { Bill } from "@/models/bill.model";
 import { BookStatistic } from "@/models/statistic.model";
 import BillService from "@/services/bill.service";
 import StatisticService from "@/services/statistic.service";
-import { getCurrentYear, getRecentDates } from "@/utils/helper";
+import { getCurrentYear, getRecentDates, isDateInCurrentMonth, isDateInCurrentYear, isDateToday } from "@/utils/helper";
 import {
   ArrowUpOutlined,
   ArrowDownOutlined,
@@ -15,9 +17,17 @@ import { GetServerSideProps, GetStaticProps } from "next";
 
 interface Props {
   data: BookStatistic;
+  bills: Bill[]
 }
 
-const Index = ({ data }: Props) => {
+const Index = ({ data, bills }: Props) => {
+  const billsInDay = bills.filter(it => isDateToday(it.date))
+  const billsInMonth = bills.filter(it => isDateInCurrentMonth(it.date))
+  const billsInYear = bills.filter(it => isDateInCurrentYear(it.date))
+  const getRevenue = (bills: Bill[]) => {
+    return Math.floor(bills.reduce((prev, cur) => prev + cur.total, 0) *1000)/1000
+  }
+
   return (
     <Row gutter={[24, 24]}>
       <Col xs={12} sm={12} lg={12} xl={6}>
@@ -27,7 +37,7 @@ const Index = ({ data }: Props) => {
         >
           <Statistic
             title={<span className="font-semibold">Doanh thu ngày</span>}
-            value={data.revenueStatistic?.day}
+            value={getRevenue(billsInDay)}
             suffix="VND"
             valueStyle={{}}
           />
@@ -40,7 +50,7 @@ const Index = ({ data }: Props) => {
         >
           <Statistic
             title={<span className="font-semibold">Doanh thu tháng</span>}
-            value={data.revenueStatistic.month}
+            value={getRevenue(billsInMonth)}
             valueStyle={{}}
             suffix="VND"
           />
@@ -53,7 +63,7 @@ const Index = ({ data }: Props) => {
         >
           <Statistic
             title={<span className="font-semibold">Doanh thu năm</span>}
-            value={data.revenueStatistic.year}
+            value={getRevenue(billsInYear)}
             valueStyle={{}}
             suffix="VND"
           />
@@ -96,7 +106,7 @@ const Index = ({ data }: Props) => {
         >
           <Statistic
             title={<span className="font-semibold">Đơn hàng trong ngày</span>}
-            value={data.billStatistic?.day}
+            value={billsInDay.length}
             prefix={
               <span className="mr-2">
                 <AccountBookOutlined />
@@ -113,7 +123,7 @@ const Index = ({ data }: Props) => {
         >
           <Statistic
             title={<span className="font-semibold">Đơn hàng trong tháng</span>}
-            value={data.billStatistic.month}
+            value={billsInMonth.length}
             prefix={
               <span className="mr-2">
                 <AccountBookOutlined />
@@ -129,7 +139,7 @@ const Index = ({ data }: Props) => {
         >
           <Statistic
             title={<span className="font-semibold">Đơn hàng trong năm</span>}
-            value={data.billStatistic.year}
+            value={billsInYear.length}
             prefix={
               <span className="mr-2">
                 <AccountBookOutlined />
@@ -192,8 +202,10 @@ const Index = ({ data }: Props) => {
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
   const data = await StatisticService.getGeneralStatistic();
+  const bills = await BillService.getAllBill();
+
   return {
-    props: { data },
+    props: { data, bills },
     revalidate: 180,
   };
 };

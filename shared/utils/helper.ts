@@ -39,7 +39,7 @@ export function vndCurrencyFormat(value: number) {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
     currency: "VND",
-  }).format(value);
+  }).format(Math.floor(value * 1000) / 1000);
 }
 
 export function dateFormatted(value: string) {
@@ -114,4 +114,30 @@ export function convertDateFormat2(isoDateString: string): string {
   const year = date.getUTCFullYear();
 
   return `${year}-${month}-${day}`;
+}
+
+export function isDateToday(isoDateString: string) {
+  const date = new Date(isoDateString);
+  const day = date.getUTCDate().toString().padStart(2, "0");
+  const currentDate = new Date();
+  const dayTmp = currentDate.getDate();
+  return Number(day) == dayTmp;
+}
+
+export function isDateInCurrentMonth(isoDateString) {
+  const date = new Date(isoDateString);
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
+  const currentDate = new Date();
+
+  const monthTmp = currentDate.getMonth() + 1;
+
+  return Number(month) == monthTmp;
+}
+
+export function isDateInCurrentYear(isoDateString) {
+  const date = new Date(isoDateString);
+  const currentDate = new Date();
+  const yearTmp = currentDate.getFullYear();
+  const year = date.getUTCFullYear();
+  return Number(year) == yearTmp;
 }
